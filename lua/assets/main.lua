@@ -18,12 +18,8 @@ local crop = {
   right = { x = 96,  y = 0,   w = 32, h = 32 },
 }
 
-local anchors = {
-  up    = { x = 16, y = 16 },
-  down  = { x = 16, y = 16 },
-  left  = { x = 16, y = 16 },
-  right = { x = 16, y = 16 },
-}
+local anchors = {}
+
 
 
 -- Animation speed (frames per second)
@@ -119,8 +115,8 @@ local function ensureAnchorForDir(dir)
   return anchors[dir]
 end
 
-
 local function serializeLuaTable(t, indent)
+
   indent = indent or 0
   local pad = string.rep("  ", indent)
   local out = "{\n"
@@ -363,10 +359,9 @@ function love.draw()
   local q = f.quads[currentDir]
 
   -- Draw centered
-  local r = crop[currentDir]
   local anchor = ensureAnchorForDir(currentDir)
   local drawX = math.floor(w * 0.5)
-  local drawY = math.floor(h * 0.5)
+  local drawY = math.floor(h * 0.75)
 
   love.graphics.draw(
     f.img, q,
