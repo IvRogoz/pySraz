@@ -36,11 +36,18 @@ local function drawTimerBar(x, y, w, h, pct)
 end
 
 local function getPawnIdleDir(pawn, boardSize)
+  if pawn.homeSide == "left" then
+    return "right"
+  elseif pawn.homeSide == "right" then
+    return "left"
+  end
+
   if pawn.col <= boardSize / 2 then
     return "right"
   end
   return "left"
 end
+
 
 local function getPawnIdleFrame(anim, t)
   if not anim or not anim.frames or #anim.frames == 0 then
@@ -158,9 +165,15 @@ local function drawCurrentPlayerPanel(S, x, y)
 
   local frameIndex = getPawnIdleFrame(S.pawnAnim, love.timer.getTime())
   local previewPawn = {
-    player = p,
+    player = {
+      name = p.name,
+      color = p.color,
+      score = p.score,
+      scaleBoost = 1.0,
+    },
   }
   drawAnimatedPawn(S, previewPawn, x + 110, y + 240, 170, "left", frameIndex, true)
+
 
   love.graphics.setFont(S.fonts.name)
 

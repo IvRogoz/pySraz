@@ -154,7 +154,7 @@ local function saveFileExists()
       return true
     end
   end
-  return love.filesystem.getInfo(SAVE_PATH) ~= nil
+  return false
 end
 
 
@@ -212,13 +212,16 @@ local function buildPlayersAndPawns(S, numPlayers, boardSize)
         r, c = cr - dr, cc + dc
       end
       if r >= 1 and r <= boardSize and c >= 1 and c <= boardSize then
+        local homeSide = (c <= boardSize / 2) and "left" or "right"
         table.insert(S.pawns, {
           player = p,
           row = r,
           col = c,
           isFlag = isFlag,
+          homeSide = homeSide,
         })
       end
+
     end
   end
 end
@@ -255,6 +258,7 @@ local function saveGameState(S)
       row = pawn.row,
       col = pawn.col,
       isFlag = pawn.isFlag,
+      homeSide = pawn.homeSide,
     })
   end
 
@@ -352,11 +356,16 @@ local function loadSavedGame(S)
   for _, pawnData in ipairs(decoded.pawns or {}) do
     local player = S.players[pawnData.playerIndex or 1]
     if player then
+      local homeSide = pawnData.homeSide
+      if not homeSide then
+        homeSide = (pawnData.col <= (S.cfg.boardSize or 1) / 2) and "left" or "right"
+      end
       local pawn = {
         player = player,
         row = pawnData.row,
         col = pawnData.col,
         isFlag = pawnData.isFlag,
+        homeSide = homeSide,
       }
       table.insert(S.pawns, pawn)
       if S.board[pawn.row] and S.board[pawn.row][pawn.col] then
