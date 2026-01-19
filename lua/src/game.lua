@@ -178,7 +178,9 @@ local function buildPlayersAndPawns(S, numPlayers, boardSize)
   for i = 1, numPlayers do
     local p = {
       name = "Player " .. i,
+      index = i,
       color = Config.PLAYER_COLORS[i],
+
       score = 0,
       pawnCanvas = nil,
       flagCanvas = nil,
@@ -239,6 +241,7 @@ local function saveGameState(S)
   for _, player in ipairs(S.players) do
     table.insert(data.players, {
       name = player.name,
+      index = player.index,
       color = player.color,
       score = player.score,
       scaleBoost = player.scaleBoost,
@@ -323,6 +326,7 @@ local function loadSavedGame(S)
   for _, playerData in ipairs(decoded.players or {}) do
     table.insert(S.players, {
       name = playerData.name or "Player",
+      index = playerData.index or 1,
       color = playerData.color or {255, 255, 255},
       score = playerData.score or 0,
       pawnCanvas = nil,
@@ -770,27 +774,27 @@ function Game.buildMenuButtons(S)
 
   S.menuButtons = {
     -- players
-    Button.new(-170, -150, 60, 60, "-", buttonFill, buttonHover, function() clampPlayers(-1) end),
-    Button.new( 170, -150, 60, 60, "+", buttonFill, buttonHover, function() clampPlayers( 1) end),
+    Button.new(-170, -170, 60, 60, "-", buttonFill, buttonHover, function() clampPlayers(-1) end),
+    Button.new( 170, -170, 60, 60, "+", buttonFill, buttonHover, function() clampPlayers( 1) end),
 
     -- time
-    Button.new(-170,  -60, 60, 60, "-", buttonFill, buttonHover, function() clampTime(-5) end),
-    Button.new( 170,  -60, 60, 60, "+", buttonFill, buttonHover, function() clampTime( 5) end),
+    Button.new(-170,  -80, 60, 60, "-", buttonFill, buttonHover, function() clampTime(-5) end),
+    Button.new( 170,  -80, 60, 60, "+", buttonFill, buttonHover, function() clampTime( 5) end),
 
     -- board size
-    Button.new(-170,   30, 60, 60, "-", buttonFill, buttonHover, function() clampBoard(-1) end),
-    Button.new( 170,   30, 60, 60, "+", buttonFill, buttonHover, function() clampBoard( 1) end),
+    Button.new(-170,   10, 60, 60, "-", buttonFill, buttonHover, function() clampBoard(-1) end),
+    Button.new( 170,   10, 60, 60, "+", buttonFill, buttonHover, function() clampBoard( 1) end),
 
     -- music volume
-    Button.new(-170,  120, 60, 60, "-", buttonFill, buttonHover, function() clampVolume(-0.05) end),
-    Button.new( 170,  120, 60, 60, "+", buttonFill, buttonHover, function() clampVolume( 0.05) end),
+    Button.new(-170,  100, 60, 60, "-", buttonFill, buttonHover, function() clampVolume(-0.05) end),
+    Button.new( 170,  100, 60, 60, "+", buttonFill, buttonHover, function() clampVolume( 0.05) end),
 
     -- play
-    Button.new(  -90,  210, 180, 60, "PLAY", {50,50,200}, {100,149,237}, startGame),
+    Button.new( -190,  260, 180, 60, "PLAY", {50,50,200}, {100,149,237}, startGame),
   }
 
   if hasSavedGame() then
-    table.insert(S.menuButtons, Button.new(-90,  280, 180, 60, "LOAD GAME", {60,120,60}, {90,170,90}, loadGame))
+    table.insert(S.menuButtons, Button.new( 10,  260, 180, 60, "LOAD GAME", {60,120,60}, {90,170,90}, loadGame))
   end
 
 end

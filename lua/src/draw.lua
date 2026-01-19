@@ -329,30 +329,41 @@ local function drawMenu(S)
 
   love.graphics.setFont(S.fonts.title)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("MAIN MENU", 0, cy - 300 + glitchy, w, "center")
+  love.graphics.printf("MAIN MENU", 0, cy - 350 + glitchy, w, "center")
 
+  local labelFont = S.fonts.small
+  local valueFont = S.fonts.medium
+  local labelOffset = -20
+  local valueOffset = 10
 
-  love.graphics.setFont(S.fonts.medium)
+  local rowPlayers = cy - 170
+  local rowTime = cy - 80
+  local rowBoard = cy + 10
+  local rowVolume = cy + 100
+
+  love.graphics.setFont(labelFont)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("Number of Players:", 0, cy - 230, w, "center")
-  love.graphics.setFont(S.fonts.title)
-  love.graphics.printf(tostring(S.cfg.numPlayers), 0, cy - 190, w, "center")
+  love.graphics.printf("Number of Players:", 0, rowPlayers + labelOffset, w, "center")
+  love.graphics.setFont(valueFont)
+  love.graphics.printf(tostring(S.cfg.numPlayers), 0, rowPlayers + valueOffset, w, "center")
 
-  love.graphics.setFont(S.fonts.medium)
-  love.graphics.printf("Time (sec):", 0, cy - 140, w, "center")
-  love.graphics.setFont(S.fonts.title)
-  love.graphics.printf(tostring(S.cfg.timeLimit), 0, cy - 100, w, "center")
+  love.graphics.setFont(labelFont)
+  love.graphics.printf("Time (sec):", 0, rowTime + labelOffset, w, "center")
+  love.graphics.setFont(valueFont)
+  love.graphics.printf(tostring(S.cfg.timeLimit), 0, rowTime + valueOffset, w, "center")
 
-  love.graphics.setFont(S.fonts.medium)
-  love.graphics.printf(("Board Size (%dx%d):"):format(S.cfg.boardSize, S.cfg.boardSize), 0, cy - 50, w, "center")
-  love.graphics.setFont(S.fonts.title)
-  love.graphics.printf(tostring(S.cfg.boardSize), 0, cy - 10, w, "center")
+  love.graphics.setFont(labelFont)
+  love.graphics.printf(("Board Size (%dx%d):"):format(S.cfg.boardSize, S.cfg.boardSize), 0, rowBoard + labelOffset, w, "center")
+  love.graphics.setFont(valueFont)
+  love.graphics.printf(tostring(S.cfg.boardSize), 0, rowBoard + valueOffset, w, "center")
 
-  love.graphics.setFont(S.fonts.medium)
-  love.graphics.printf("Music Volume:", 0, cy + 40, w, "center")
-  love.graphics.setFont(S.fonts.title)
+  love.graphics.setFont(labelFont)
+  love.graphics.printf("Music Volume:", 0, rowVolume + labelOffset, w, "center")
+  love.graphics.setFont(valueFont)
   local volPct = math.floor((S.cfg.musicVolume or 0.5) * 100 + 0.5)
-  love.graphics.printf(tostring(volPct) .. "%", 0, cy + 80, w, "center")
+  love.graphics.printf(tostring(volPct) .. "%", 0, rowVolume + valueOffset, w, "center")
+
+
 
 
   for _, b in ipairs(S.menuButtons) do
@@ -518,26 +529,32 @@ local function drawBoard(S)
               scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
             end
 
+            local flip = pawn.player.index == 2 or pawn.player.index == 3
+            local sx = flip and -scale or scale
             U.setColor255(pawn.player.color[1], pawn.player.color[2], pawn.player.color[3], 255)
             love.graphics.draw(
               sheet.image, quad,
               centerX, bottomY,
               0,
-              scale, scale,
+              sx, scale,
               sheet.frame_w / 2, sheet.frame_h
             )
             U.setColor255(255, 255, 255, 255)
+
           else
             local canvas = pawn.player.flagCanvas
             local scale = pawnSize / Config.PAWN_CANVAS_SIZE
+            local flip = pawn.player.index == 2 or pawn.player.index == 3
+            local sx = flip and -scale or scale
             U.setColor255(255, 255, 255, 255)
             love.graphics.draw(
               canvas,
               centerX, bottomY,
               0,
-              scale, scale,
+              sx, scale,
               Config.PAWN_CANVAS_SIZE / 2, Config.PAWN_CANVAS_SIZE
             )
+
           end
         else
           local dir = getPawnIdleDir(pawn, boardSize)
