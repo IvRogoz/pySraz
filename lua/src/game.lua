@@ -198,21 +198,6 @@ local function applyPendingAction(S, success)
   local fromRow, fromCol = fromPawn.row, fromPawn.col
 
 
-  if act.type == "attack" and targetCell.pawn and targetCell.pawn.player ~= fromPawn.player then
-    local victim = targetCell.pawn
-    S.board[victim.row][victim.col].pawn = nil
-    for i = #S.pawns, 1, -1 do
-      if S.pawns[i] == victim then table.remove(S.pawns, i) break end
-    end
-    current.score = current.score + 5
-  else
-    current.score = current.score + 1
-  end
-
-  S.board[fromPawn.row][fromPawn.col].pawn = nil
-  fromPawn.row, fromPawn.col = tr, tc
-  targetCell.pawn = fromPawn
-
   local dir
   if tr < fromRow then
     dir = "down"
@@ -224,7 +209,7 @@ local function applyPendingAction(S, success)
     dir = "right"
   end
 
-  S.moveAnim = {
+  local moveAnim = {
     pawn = fromPawn,
     fromRow = fromRow,
     fromCol = fromCol,
@@ -236,10 +221,27 @@ local function applyPendingAction(S, success)
   }
 
   startFeedback(S, true, function()
+    if act.type == "attack" and targetCell.pawn and targetCell.pawn.player ~= fromPawn.player then
+      local victim = targetCell.pawn
+      S.board[victim.row][victim.col].pawn = nil
+      for i = #S.pawns, 1, -1 do
+        if S.pawns[i] == victim then table.remove(S.pawns, i) break end
+      end
+      current.score = current.score + 5
+    else
+      current.score = current.score + 1
+    end
 
+    S.board[fromPawn.row][fromPawn.col].pawn = nil
+    fromPawn.row, fromPawn.col = tr, tc
+    targetCell.pawn = fromPawn
+
+    S.moveAnim = moveAnim
     S.selectedPawn = nil
     S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
   end)
+
+
 end
 
 local function askForAction(S, actType, pawn, toR, toC, category)
