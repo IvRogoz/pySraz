@@ -72,6 +72,28 @@ local function getPawnMoveFrame(anim, t)
   return first + (math.floor(t * fps) % range)
 end
 
+local function getPawnAttackFrame(anim, t, duration)
+  if not anim or not anim.frames or #anim.frames == 0 then
+    return 1
+  end
+  local first = math.min(12, #anim.frames)
+  local last = math.min(19, #anim.frames)
+  if last < first then
+    first, last = 1, #anim.frames
+  end
+  local range = math.max(1, last - first + 1)
+  if range == 1 then
+    return first
+  end
+
+  local progress = 0
+  if duration and duration > 0 then
+    progress = U.clamp(t / duration, 0, 1)
+  end
+  return first + math.floor(progress * (range - 1))
+end
+
+
 local function getPawnAnchor(anim, dir)
   if not anim or not anim.crop or not anim.crop[dir] then
     return 0, 0
@@ -393,8 +415,11 @@ local function drawBoard(S)
 
   local moveAnim = S.moveAnim
   local movingPawn = moveAnim and moveAnim.pawn or nil
+  local attackAnim = S.attackAnim
+  local attackingPawn = attackAnim and attackAnim.pawn or nil
 
   local moves = S.selectedPawn and Game.getValidMoves(S, S.selectedPawn, boardSize) or {}
+
 
   local moveSet = {}
   for _, m in ipairs(moves) do
@@ -451,7 +476,11 @@ local function drawBoard(S)
 
         if movingPawn and pawn == movingPawn then
           -- drawn after board for movement interpolation
+        elseif attackingPawn and pawn == attackingPawn then
+          local frameIndex = getPawnAttackFrame(S.pawnAnim, attackAnim.t, attackAnim.duration)
+          drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, attackAnim.dir, frameIndex, false)
         elseif pawn.isFlag then
+
           -- animated flag (5 frames) tinted to player color
           if S.flagSheet and S.flagSheet.image and S.flagSheet.quads then
             local sheet = S.flagSheet

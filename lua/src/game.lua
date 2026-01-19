@@ -380,6 +380,8 @@ local function loadSavedGame(S)
   S.feedbackUI = nil
   S.pendingAction = nil
   S.moveAnim = nil
+  S.attackAnim = nil
+  S.attackPending = nil
   S.state.mode = "game"
 
   return true
@@ -523,7 +525,19 @@ local function beginQuestion(S, category, timeLimit, requiredCorrect, onFinish)
   }
 end
 
+local function getActionDir(fromRow, fromCol, toRow, toCol)
+  if toRow < fromRow then
+    return "down"
+  elseif toRow > fromRow then
+    return "up"
+  elseif toCol < fromCol then
+    return "left"
+  end
+  return "right"
+end
+
 local function applyPendingAction(S, success)
+
   if not S.pendingAction then return end
   local act = S.pendingAction
   S.pendingAction = nil
@@ -544,16 +558,7 @@ local function applyPendingAction(S, success)
   local fromRow, fromCol = fromPawn.row, fromPawn.col
 
 
-  local dir
-  if tr < fromRow then
-    dir = "down"
-  elseif tr > fromRow then
-    dir = "up"
-  elseif tc < fromCol then
-    dir = "left"
-  else
-    dir = "right"
-  end
+  local dir = getActionDir(fromRow, fromCol, tr, tc)
 
   local moveAnim = {
     pawn = fromPawn,
@@ -613,9 +618,43 @@ local function askForAction(S, actType, pawn, toR, toC, category)
   }
 
   local needed = (actType == "attack") and 2 or 1
-  beginQuestion(S, category, S.cfg.timeLimit, needed, function(ok)
+  local onFinish = function(ok)
     applyPendingAction(S, ok)
-  end)
+  end
+
+  if actType == "attack" then
+    local dir = getActionDir(pawn.row, pawn.col, toR, toC)
+    local duration = 0.6
+    if S.pawnAnim and S.pawnAnim.frames and #S.pawnAnim.frames > 0 then
+      local first = math.min(12, #S.pawnAnim.frames)
+      local last = math.min(19, #S.pawnAnim.frames)
+      if last < first then
+        first, last = 1, #S.pawnAnim.frames
+      end
+      local range = math.max(1, last - first + 1)
+      local fps = (S.pawnAnim.fps or 10) * 0.5
+      if fps > 0 then
+        duration = range / fps
+      end
+    end
+
+    S.attackAnim = {
+      pawn = pawn,
+      dir = dir,
+      t = 0,
+      duration = duration,
+    }
+    S.attackPending = {
+      category = category,
+      timeLimit = S.cfg.timeLimit,
+      required = needed,
+      onFinish = onFinish,
+    }
+    return
+  end
+
+  beginQuestion(S, category, S.cfg.timeLimit, needed, onFinish)
+
 end
 
 -- -----------------------------
@@ -652,6 +691,8 @@ function Game.buildMenuButtons(S)
     S.feedbackUI = nil
     S.pendingAction = nil
     S.moveAnim = nil
+    S.attackAnim = nil
+    S.attackPending = nil
     S.state.mode = "game"
     saveGameState(S)
   end
@@ -706,8 +747,23 @@ function Game.update(S, dt)
     end
   end
 
-  if S.feedbackUI then
+  if S.attackAnim then
+    S.attackAnim.t = S.attackAnim.t + dt
+    if S.attackAnim.t >= S.attackAnim.duration then
+      local pending = S.attackPending
+      S.attackAnim = nil
+      S.attackPending = nil
+      if pending then
+        beginQuestion(S, pending.category, pending.timeLimit, pending.required, pending.onFinish)
+      end
+    end
+  end
 
+  if S.attackAnim then
+    return
+  end
+
+  if S.feedbackUI then
     S.feedbackUI.t = S.feedbackUI.t + dt
     if S.feedbackUI.t >= S.feedbackUI.duration then
       local done = S.feedbackUI.onDone
@@ -728,8 +784,10 @@ function Game.update(S, dt)
   end
 end
 
+
 function Game.mousepressed(S, x, y, button)
-  if S.feedbackUI then return end
+  if S.feedbackUI or S.attackAnim then return end
+
 
   if S.state.mode == "splash" then
     if button == 1 then S.state.mode = "menu" end

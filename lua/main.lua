@@ -33,6 +33,8 @@ local S = {
   feedbackUI = nil,
   pendingAction = nil,
   moveAnim = nil,
+  attackAnim = nil,
+  attackPending = nil,
 
 
   menuButtons = nil,
