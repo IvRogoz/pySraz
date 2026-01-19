@@ -273,29 +273,31 @@ local function drawMenu(S)
 
   love.graphics.setFont(S.fonts.title)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("MAIN MENU", 0, cy - 260 + glitchy, w, "center")
+  love.graphics.printf("MAIN MENU", 0, cy - 300 + glitchy, w, "center")
+
 
   love.graphics.setFont(S.fonts.medium)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("Number of Players:", 0, cy - 190, w, "center")
+  love.graphics.printf("Number of Players:", 0, cy - 230, w, "center")
   love.graphics.setFont(S.fonts.title)
-  love.graphics.printf(tostring(S.cfg.numPlayers), 0, cy - 155, w, "center")
+  love.graphics.printf(tostring(S.cfg.numPlayers), 0, cy - 190, w, "center")
 
   love.graphics.setFont(S.fonts.medium)
-  love.graphics.printf("Time (sec):", 0, cy - 110, w, "center")
+  love.graphics.printf("Time (sec):", 0, cy - 140, w, "center")
   love.graphics.setFont(S.fonts.title)
-  love.graphics.printf(tostring(S.cfg.timeLimit), 0, cy - 75, w, "center")
+  love.graphics.printf(tostring(S.cfg.timeLimit), 0, cy - 100, w, "center")
 
   love.graphics.setFont(S.fonts.medium)
-  love.graphics.printf(("Board Size (%dx%d):"):format(S.cfg.boardSize, S.cfg.boardSize), 0, cy - 25, w, "center")
+  love.graphics.printf(("Board Size (%dx%d):"):format(S.cfg.boardSize, S.cfg.boardSize), 0, cy - 50, w, "center")
   love.graphics.setFont(S.fonts.title)
-  love.graphics.printf(tostring(S.cfg.boardSize), 0, cy + 10, w, "center")
+  love.graphics.printf(tostring(S.cfg.boardSize), 0, cy - 10, w, "center")
 
   love.graphics.setFont(S.fonts.medium)
-  love.graphics.printf("Music Volume:", 0, cy + 70, w, "center")
+  love.graphics.printf("Music Volume:", 0, cy + 40, w, "center")
   love.graphics.setFont(S.fonts.title)
   local volPct = math.floor((S.cfg.musicVolume or 0.5) * 100 + 0.5)
-  love.graphics.printf(tostring(volPct) .. "%", 0, cy + 105, w, "center")
+  love.graphics.printf(tostring(volPct) .. "%", 0, cy + 80, w, "center")
+
 
   for _, b in ipairs(S.menuButtons) do
     b:draw(S.fonts.medium, glitchx, glitchy)

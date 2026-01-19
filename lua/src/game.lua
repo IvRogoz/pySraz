@@ -7,6 +7,157 @@ local Questions = require("src.questions")
 
 local Game = {}
 
+local SAVE_PATH = "savegame.json"
+
+local function getWorkingSavePath()
+  local cwd = love.filesystem.getWorkingDirectory and love.filesystem.getWorkingDirectory() or nil
+  if not cwd or cwd == "" then
+    return nil
+  end
+  return cwd .. "/" .. SAVE_PATH
+end
+
+local function getSourceSavePath()
+  local realDir = love.filesystem.getRealDirectory("main.lua")
+  if not realDir or realDir == "" then
+    return nil
+  end
+  return realDir .. "/" .. SAVE_PATH
+end
+
+local function getDebugPath()
+  local cwd = love.filesystem.getWorkingDirectory and love.filesystem.getWorkingDirectory() or nil
+  if cwd and cwd ~= "" then
+    return cwd .. "/save_debug.txt"
+  end
+  local sourcePath = getSourceSavePath()
+  if sourcePath then
+    return sourcePath:gsub(SAVE_PATH .. "$", "save_debug.txt")
+  end
+  return "save_debug.txt"
+end
+
+local function debugLog(message)
+  print(message)
+  local path = getDebugPath()
+  local file = io.open(path, "a")
+  if file then
+    file:write(message .. "\n")
+    file:close()
+  end
+end
+
+local function writeSaveFile(content)
+  local savedPaths = {}
+  debugLog("Save debug: cwd=" .. tostring(love.filesystem.getWorkingDirectory and love.filesystem.getWorkingDirectory() or nil)
+    .. " source=" .. tostring(getSourceSavePath()))
+
+  local workingPath = getWorkingSavePath()
+  if workingPath then
+    local file, err = io.open(workingPath, "w")
+    if file then
+      file:write(content)
+      file:close()
+      table.insert(savedPaths, workingPath)
+      debugLog("Save debug: wrote " .. workingPath)
+    else
+      debugLog("Save debug: failed " .. workingPath .. " -> " .. tostring(err))
+    end
+  end
+
+  local sourcePath = getSourceSavePath()
+  if sourcePath then
+    local sourceFile, sourceErr = io.open(sourcePath, "w")
+    if sourceFile then
+      sourceFile:write(content)
+      sourceFile:close()
+      table.insert(savedPaths, sourcePath)
+      debugLog("Save debug: wrote " .. sourcePath)
+    else
+      debugLog("Save debug: failed " .. sourcePath .. " -> " .. tostring(sourceErr))
+    end
+  end
+
+  local ok, loveErr = love.filesystem.write(SAVE_PATH, content)
+  if ok then
+    local saveDir = love.filesystem.getSaveDirectory()
+    if saveDir then
+      local lovePath = saveDir .. "/" .. SAVE_PATH
+      table.insert(savedPaths, lovePath)
+      debugLog("Save debug: wrote " .. lovePath)
+    end
+  else
+    debugLog("Save debug: failed love save -> " .. tostring(loveErr))
+  end
+
+  return savedPaths
+end
+
+local function readSaveFile()
+  local workingPath = getWorkingSavePath()
+  if workingPath then
+    local file = io.open(workingPath, "r")
+    if file then
+      local content = file:read("*a")
+      file:close()
+      return content
+    end
+  end
+
+  local sourcePath = getSourceSavePath()
+  if sourcePath then
+    local sourceFile = io.open(sourcePath, "r")
+    if sourceFile then
+      local content = sourceFile:read("*a")
+      sourceFile:close()
+      return content
+    end
+  end
+
+  if love.filesystem.getInfo(SAVE_PATH) then
+    return love.filesystem.read(SAVE_PATH)
+  end
+
+  return nil
+end
+
+local function removeSaveFile()
+  local workingPath = getWorkingSavePath()
+  if workingPath then
+    pcall(os.remove, workingPath)
+  end
+
+  local sourcePath = getSourceSavePath()
+  if sourcePath then
+    pcall(os.remove, sourcePath)
+  end
+  if love.filesystem.getInfo(SAVE_PATH) then
+    love.filesystem.remove(SAVE_PATH)
+  end
+end
+
+local function saveFileExists()
+  local workingPath = getWorkingSavePath()
+  if workingPath then
+    local file = io.open(workingPath, "r")
+    if file then
+      file:close()
+      return true
+    end
+  end
+
+  local sourcePath = getSourceSavePath()
+  if sourcePath then
+    local sourceFile = io.open(sourcePath, "r")
+    if sourceFile then
+      sourceFile:close()
+      return true
+    end
+  end
+  return love.filesystem.getInfo(SAVE_PATH) ~= nil
+end
+
+
 -- -----------------------------
 -- Board / gameplay helpers
 -- -----------------------------
@@ -72,7 +223,193 @@ local function buildPlayersAndPawns(S, numPlayers, boardSize)
   end
 end
 
+local function saveGameState(S)
+  print("Save debug: saveGameState called")
+  local data = {
+    cfg = S.cfg,
+    currentPlayerIndex = S.currentPlayerIndex,
+    players = {},
+    pawns = {},
+    board = {},
+  }
+
+  for _, player in ipairs(S.players) do
+    table.insert(data.players, {
+      name = player.name,
+      color = player.color,
+      score = player.score,
+      scaleBoost = player.scaleBoost,
+    })
+  end
+
+  for _, pawn in ipairs(S.pawns) do
+    local playerIndex = nil
+    for idx, player in ipairs(S.players) do
+      if pawn.player == player then
+        playerIndex = idx
+        break
+      end
+    end
+    table.insert(data.pawns, {
+      playerIndex = playerIndex,
+      row = pawn.row,
+      col = pawn.col,
+      isFlag = pawn.isFlag,
+    })
+  end
+
+  for r = 1, #S.board do
+    data.board[r] = {}
+    for c = 1, #S.board[r] do
+      local cell = S.board[r][c]
+      data.board[r][c] = {
+        category = cell.category,
+        isHole = cell.isHole,
+      }
+    end
+  end
+
+  local encoded = U.encodeJson(data)
+  if not encoded then
+    print("Save debug: JSON encode failed")
+    local paths = writeSaveFile("{\"error\":\"encode failed\"}")
+    if #paths == 0 then
+      print("Warning: failed to write savegame.json")
+    else
+      print("Saved error payload to: " .. table.concat(paths, ", "))
+    end
+    return
+  end
+
+  local paths = writeSaveFile(encoded)
+  if #paths == 0 then
+    print("Warning: failed to write savegame.json")
+  else
+    print("Saved game to: " .. table.concat(paths, ", "))
+  end
+end
+
+local function clearSavedGame()
+  removeSaveFile()
+end
+
+local function hasSavedGame()
+  return saveFileExists()
+end
+
+local function loadSavedGame(S)
+  debugLog("Load debug: attempting load")
+  local content = readSaveFile()
+  if not content then
+    debugLog("Load debug: no save file found")
+    return false
+  end
+
+  local decoded = U.decodeJson(content)
+  if not decoded then
+    debugLog("Load debug: JSON decode failed")
+    return false
+  end
+
+  S.cfg = decoded.cfg or S.cfg
+  S.players = {}
+  S.pawns = {}
+  S.board = {}
+
+  for _, playerData in ipairs(decoded.players or {}) do
+    table.insert(S.players, {
+      name = playerData.name or "Player",
+      color = playerData.color or {255, 255, 255},
+      score = playerData.score or 0,
+      pawnCanvas = nil,
+      flagCanvas = nil,
+      scaleBoost = playerData.scaleBoost or 1.0,
+    })
+  end
+
+  for _, player in ipairs(S.players) do
+    if S.pawnBaseImg and S.flagBaseImg then
+      player.pawnCanvas = Assets.makeTintedCanvas(S.pawnBaseImg, player.color, 1.0)
+      player.flagCanvas = Assets.makeTintedCanvas(S.flagBaseImg, player.color, 0.35)
+    else
+      player.pawnCanvas = Assets.makeFallbackPawnCanvas(player.color, false)
+      player.flagCanvas = Assets.makeFallbackPawnCanvas(player.color, true)
+    end
+  end
+
+  for r = 1, #(decoded.board or {}) do
+    S.board[r] = {}
+    for c = 1, #(decoded.board[r] or {}) do
+      local cell = decoded.board[r][c]
+      S.board[r][c] = {
+        category = cell.category,
+        isHole = cell.isHole,
+        pawn = nil,
+      }
+    end
+  end
+
+  for _, pawnData in ipairs(decoded.pawns or {}) do
+    local player = S.players[pawnData.playerIndex or 1]
+    if player then
+      local pawn = {
+        player = player,
+        row = pawnData.row,
+        col = pawnData.col,
+        isFlag = pawnData.isFlag,
+      }
+      table.insert(S.pawns, pawn)
+      if S.board[pawn.row] and S.board[pawn.row][pawn.col] then
+        S.board[pawn.row][pawn.col].pawn = pawn
+      end
+    end
+  end
+
+  S.currentPlayerIndex = decoded.currentPlayerIndex or 1
+  S.selectedPawn = nil
+  S.questionUI = nil
+  S.feedbackUI = nil
+  S.pendingAction = nil
+  S.moveAnim = nil
+  S.state.mode = "game"
+
+  return true
+end
+
+local function isGameOver(S)
+  local pawnCounts = {}
+  local flagCounts = {}
+  for idx = 1, #S.players do
+    pawnCounts[idx] = 0
+    flagCounts[idx] = 0
+  end
+
+  for _, pawn in ipairs(S.pawns) do
+    local idx = nil
+    for i, player in ipairs(S.players) do
+      if pawn.player == player then
+        idx = i
+        break
+      end
+    end
+    if idx then
+      pawnCounts[idx] = pawnCounts[idx] + 1
+      if pawn.isFlag then
+        flagCounts[idx] = flagCounts[idx] + 1
+      end
+    end
+  end
+
+  for i = 1, #S.players do
+    if pawnCounts[i] == 0 or flagCounts[i] == 0 then
+      return true
+    end
+  end
+  return false
+end
+
 local function initBoard(S, boardSize)
+
   S.board = {}
 
   -- Build a balanced bag of categories, then shuffle for random placement
@@ -236,9 +573,22 @@ local function applyPendingAction(S, success)
     fromPawn.row, fromPawn.col = tr, tc
     targetCell.pawn = fromPawn
 
+    if isGameOver(S) then
+      clearSavedGame()
+      S.moveAnim = nil
+      S.selectedPawn = nil
+      S.questionUI = nil
+      S.feedbackUI = nil
+      S.pendingAction = nil
+      S.state.mode = "menu"
+      Game.buildMenuButtons(S)
+      return
+    end
+
     S.moveAnim = moveAnim
     S.selectedPawn = nil
     S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
+    saveGameState(S)
   end)
 
 
@@ -294,29 +644,46 @@ function Game.buildMenuButtons(S)
     S.pendingAction = nil
     S.moveAnim = nil
     S.state.mode = "game"
-
+    saveGameState(S)
   end
+
+  local function loadGame()
+    if loadSavedGame(S) then
+      debugLog("Load debug: load succeeded")
+      return
+    end
+    debugLog("Load debug: load failed")
+  end
+
+
+  local buttonFill = {220, 220, 220}
+  local buttonHover = {255, 180, 120}
 
   S.menuButtons = {
     -- players
-    Button.new(-100, -120, 50, 50, "-", {20,20,20}, {200,50,50}, function() clampPlayers(-1) end),
-    Button.new( 100, -120, 50, 50, "+", {20,20,20}, {200,50,50}, function() clampPlayers( 1) end),
+    Button.new(-170, -150, 60, 60, "-", buttonFill, buttonHover, function() clampPlayers(-1) end),
+    Button.new( 170, -150, 60, 60, "+", buttonFill, buttonHover, function() clampPlayers( 1) end),
 
     -- time
-    Button.new(-100,  -40, 50, 50, "-", {20,20,20}, {200,50,50}, function() clampTime(-5) end),
-    Button.new( 100,  -40, 50, 50, "+", {20,20,20}, {200,50,50}, function() clampTime( 5) end),
+    Button.new(-170,  -60, 60, 60, "-", buttonFill, buttonHover, function() clampTime(-5) end),
+    Button.new( 170,  -60, 60, 60, "+", buttonFill, buttonHover, function() clampTime( 5) end),
 
     -- board size
-    Button.new(-100,   40, 50, 50, "-", {20,20,20}, {200,50,50}, function() clampBoard(-1) end),
-    Button.new( 100,   40, 50, 50, "+", {20,20,20}, {200,50,50}, function() clampBoard( 1) end),
+    Button.new(-170,   30, 60, 60, "-", buttonFill, buttonHover, function() clampBoard(-1) end),
+    Button.new( 170,   30, 60, 60, "+", buttonFill, buttonHover, function() clampBoard( 1) end),
 
-    -- NEW: music volume
-    Button.new(-100,  120, 50, 50, "-", {20,20,20}, {200,50,50}, function() clampVolume(-0.05) end),
-    Button.new( 100,  120, 50, 50, "+", {20,20,20}, {200,50,50}, function() clampVolume( 0.05) end),
+    -- music volume
+    Button.new(-170,  120, 60, 60, "-", buttonFill, buttonHover, function() clampVolume(-0.05) end),
+    Button.new( 170,  120, 60, 60, "+", buttonFill, buttonHover, function() clampVolume( 0.05) end),
 
-    -- play (moved down to make room)
-    Button.new(  -80,  200, 160, 60, "PLAY", {50,50,200}, {100,149,237}, startGame),
+    -- play
+    Button.new(  -90,  210, 180, 60, "PLAY", {50,50,200}, {100,149,237}, startGame),
   }
+
+  if hasSavedGame() then
+    table.insert(S.menuButtons, Button.new(-90,  280, 180, 60, "LOAD GAME", {60,120,60}, {90,170,90}, loadGame))
+  end
+
 end
 
 -- -----------------------------
@@ -491,8 +858,10 @@ function Game.keypressed(S, key)
     end
     if S.state.mode == "game" then
       S.state.mode = "menu"
+      Game.buildMenuButtons(S)
       return
     end
+
   end
 end
 
