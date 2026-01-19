@@ -145,7 +145,10 @@ local function drawLegend(S, x, y)
   end
 end
 
+local drawAnimatedPawn
+
 local function drawCurrentPlayerPanel(S, x, y)
+
   local p = S.players[S.currentPlayerIndex]
   if not p then return end
 
@@ -153,17 +156,21 @@ local function drawCurrentPlayerPanel(S, x, y)
   love.graphics.setFont(S.fonts.small)
   love.graphics.print("Current Turn", x + 60, y)
 
-  -- icon preview still uses pawnCanvas
-  U.setColor255(255, 255, 255, 255)
-  love.graphics.draw(p.pawnCanvas, x + 60, y + 45, 0, 2.2, 2.2)
+  local frameIndex = getPawnIdleFrame(S.pawnAnim, love.timer.getTime())
+  local previewPawn = {
+    player = p,
+  }
+  drawAnimatedPawn(S, previewPawn, x + 110, y + 240, 170, "left", frameIndex, true)
 
   love.graphics.setFont(S.fonts.name)
+
   U.setColor255(p.color[1], p.color[2], p.color[3], 255)
-  love.graphics.printf(p.name, x, y + 130, 200, "center")
+  love.graphics.printf(p.name, x, y + 250, 200, "center")
 
   love.graphics.setFont(S.fonts.small)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("Score: " .. p.score, x, y + 165, 200, "center")
+  love.graphics.printf("Score: " .. p.score, x, y + 285, 200, "center")
+
 end
 
 local function drawHUD(S)
@@ -295,7 +302,7 @@ local function drawMenu(S)
   end
 end
 
-local function drawAnimatedPawn(S, pawn, x, y, pawnSize, dir, frameIndex, allowPulse)
+drawAnimatedPawn = function(S, pawn, x, y, pawnSize, dir, frameIndex, allowPulse)
   local anim = S.pawnAnim
   local pulse = allowPulse and S.selectedPawn and pawn == S.selectedPawn
   if anim and anim.frames and #anim.frames > 0 then
