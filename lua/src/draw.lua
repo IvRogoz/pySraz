@@ -93,6 +93,27 @@ local function getPawnAttackFrame(anim, t, duration)
   return first + math.floor(progress * (range - 1))
 end
 
+local function getPawnDeathFrame(anim, t, duration)
+  if not anim or not anim.frames or #anim.frames == 0 then
+    return 1
+  end
+  local first = math.min(62, #anim.frames)
+  local last = math.min(74, #anim.frames)
+  if last < first then
+    first, last = 1, #anim.frames
+  end
+  local range = math.max(1, last - first + 1)
+  if range == 1 then
+    return first
+  end
+
+  local progress = 0
+  if duration and duration > 0 then
+    progress = U.clamp(t / duration, 0, 1)
+  end
+  return first + math.floor(progress * (range - 1))
+end
+
 
 local function getPawnAnchor(anim, dir)
   if not anim or not anim.crop or not anim.crop[dir] then
@@ -417,6 +438,8 @@ local function drawBoard(S)
   local movingPawn = moveAnim and moveAnim.pawn or nil
   local attackAnim = S.attackAnim
   local attackingPawn = attackAnim and attackAnim.pawn or nil
+  local deathAnim = S.deathAnim
+  local dyingPawn = deathAnim and deathAnim.pawn or nil
 
   local moves = S.selectedPawn and Game.getValidMoves(S, S.selectedPawn, boardSize) or {}
 
@@ -476,6 +499,8 @@ local function drawBoard(S)
 
         if movingPawn and pawn == movingPawn then
           -- drawn after board for movement interpolation
+        elseif dyingPawn and pawn == dyingPawn then
+          -- drawn after board as death animation
         elseif attackingPawn and pawn == attackingPawn then
           local frameIndex = getPawnAttackFrame(S.pawnAnim, attackAnim.t, attackAnim.duration)
           drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, attackAnim.dir, frameIndex, false)
@@ -524,6 +549,13 @@ local function drawBoard(S)
     end
   end
 
+  if deathAnim and deathAnim.pawn then
+    local centerX = startX + (deathAnim.col - 1) * cellSize + cellSize / 2
+    local bottomY = startY + deathAnim.row * cellSize
+    local frameIndex = getPawnDeathFrame(S.pawnAnim, deathAnim.t, deathAnim.duration)
+    drawAnimatedPawn(S, deathAnim.pawn, centerX, bottomY, pawnSize, deathAnim.dir, frameIndex, false)
+  end
+
   if moveAnim and moveAnim.pawn then
     local denom = moveAnim.duration > 0 and moveAnim.duration or 1
     local t = U.clamp(moveAnim.t / denom, 0, 1)
@@ -539,6 +571,7 @@ local function drawBoard(S)
 
   drawHUD(S)
 end
+
 
 
 local function drawQuestionModal(S)

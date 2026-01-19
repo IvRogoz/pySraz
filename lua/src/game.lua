@@ -382,6 +382,8 @@ local function loadSavedGame(S)
   S.moveAnim = nil
   S.attackAnim = nil
   S.attackPending = nil
+  S.deathAnim = nil
+  S.deathPending = nil
   S.state.mode = "game"
 
   return true
@@ -536,6 +538,48 @@ local function getActionDir(fromRow, fromCol, toRow, toCol)
   return "right"
 end
 
+local function executeActionResult(S, pending)
+  local current = S.players[S.currentPlayerIndex]
+  local fromPawn = pending.fromPawn
+  local targetCell = pending.targetCell
+  local tr, tc = pending.toRow, pending.toCol
+
+  if pending.victim then
+    local victim = pending.victim
+    S.board[victim.row][victim.col].pawn = nil
+    for i = #S.pawns, 1, -1 do
+      if S.pawns[i] == victim then table.remove(S.pawns, i) break end
+    end
+  end
+
+  current.score = current.score + pending.scoreDelta
+
+  S.board[fromPawn.row][fromPawn.col].pawn = nil
+  fromPawn.row, fromPawn.col = tr, tc
+  targetCell.pawn = fromPawn
+
+  if isGameOver(S) then
+    clearSavedGame()
+    S.moveAnim = nil
+    S.selectedPawn = nil
+    S.questionUI = nil
+    S.feedbackUI = nil
+    S.pendingAction = nil
+    S.attackAnim = nil
+    S.attackPending = nil
+    S.deathAnim = nil
+    S.deathPending = nil
+    S.state.mode = "menu"
+    Game.buildMenuButtons(S)
+    return
+  end
+
+  S.moveAnim = pending.moveAnim
+  S.selectedPawn = nil
+  S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
+  saveGameState(S)
+end
+
 local function applyPendingAction(S, success)
 
   if not S.pendingAction then return end
@@ -571,38 +615,51 @@ local function applyPendingAction(S, success)
     duration = 0.45,
   }
 
+  local victim = nil
+  if act.type == "attack" and targetCell.pawn and targetCell.pawn.player ~= fromPawn.player then
+    victim = targetCell.pawn
+  end
+
+  local pending = {
+    fromPawn = fromPawn,
+    targetCell = targetCell,
+    toRow = tr,
+    toCol = tc,
+    moveAnim = moveAnim,
+    scoreDelta = (act.type == "attack") and 5 or 1,
+    victim = victim,
+  }
+
   startFeedback(S, true, function()
-    if act.type == "attack" and targetCell.pawn and targetCell.pawn.player ~= fromPawn.player then
-      local victim = targetCell.pawn
-      S.board[victim.row][victim.col].pawn = nil
-      for i = #S.pawns, 1, -1 do
-        if S.pawns[i] == victim then table.remove(S.pawns, i) break end
+    if act.type == "attack" and victim then
+      local duration = 0.6
+      if S.pawnAnim and S.pawnAnim.frames and #S.pawnAnim.frames > 0 then
+        local first = math.min(62, #S.pawnAnim.frames)
+        local last = math.min(74, #S.pawnAnim.frames)
+        if last < first then
+          first, last = 1, #S.pawnAnim.frames
+        end
+        local range = math.max(1, last - first + 1)
+        local fps = (S.pawnAnim.fps or 10) * 0.5
+        if fps > 0 then
+          duration = range / fps
+        end
       end
-      current.score = current.score + 5
-    else
-      current.score = current.score + 1
-    end
 
-    S.board[fromPawn.row][fromPawn.col].pawn = nil
-    fromPawn.row, fromPawn.col = tr, tc
-    targetCell.pawn = fromPawn
-
-    if isGameOver(S) then
-      clearSavedGame()
-      S.moveAnim = nil
-      S.selectedPawn = nil
-      S.questionUI = nil
-      S.feedbackUI = nil
-      S.pendingAction = nil
-      S.state.mode = "menu"
-      Game.buildMenuButtons(S)
+      local attackDir = getActionDir(tr, tc, fromRow, fromCol)
+      S.deathAnim = {
+        pawn = victim,
+        row = tr,
+        col = tc,
+        dir = attackDir,
+        t = 0,
+        duration = duration,
+      }
+      S.deathPending = pending
       return
     end
 
-    S.moveAnim = moveAnim
-    S.selectedPawn = nil
-    S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
-    saveGameState(S)
+    executeActionResult(S, pending)
   end)
 
 
@@ -693,6 +750,8 @@ function Game.buildMenuButtons(S)
     S.moveAnim = nil
     S.attackAnim = nil
     S.attackPending = nil
+    S.deathAnim = nil
+    S.deathPending = nil
     S.state.mode = "game"
     saveGameState(S)
   end
@@ -759,7 +818,19 @@ function Game.update(S, dt)
     end
   end
 
-  if S.attackAnim then
+  if S.deathAnim then
+    S.deathAnim.t = S.deathAnim.t + dt
+    if S.deathAnim.t >= S.deathAnim.duration then
+      local pending = S.deathPending
+      S.deathAnim = nil
+      S.deathPending = nil
+      if pending then
+        executeActionResult(S, pending)
+      end
+    end
+  end
+
+  if S.attackAnim or S.deathAnim then
     return
   end
 
@@ -786,7 +857,7 @@ end
 
 
 function Game.mousepressed(S, x, y, button)
-  if S.feedbackUI or S.attackAnim then return end
+  if S.feedbackUI or S.attackAnim or S.deathAnim then return end
 
 
   if S.state.mode == "splash" then

@@ -35,6 +35,8 @@ local S = {
   moveAnim = nil,
   attackAnim = nil,
   attackPending = nil,
+  deathAnim = nil,
+  deathPending = nil,
 
 
   menuButtons = nil,
