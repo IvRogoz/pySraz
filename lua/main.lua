@@ -32,6 +32,8 @@ local S = {
   questionUI = nil,
   feedbackUI = nil,
   pendingAction = nil,
+  moveAnim = nil,
+
 
   menuButtons = nil,
 
@@ -39,8 +41,9 @@ local S = {
   pawnBaseImg = nil,
   flagBaseImg = nil,
 
-  pawnSheet = nil,
+  pawnAnim = nil,
   flagSheet = nil,
+
 
   -- optional low-res background render target (used by your shader background, if draw.lua uses it)
   bgScaleW = 320,
@@ -99,8 +102,9 @@ function love.load()
   if not S.flagBaseImg then print("Warning: flag.png missing -> using fallback") end
 
   -- Optional sprite sheets
-  S.pawnSheet = Assets.loadSpriteSheet("pawn_spritesheet.png", 64, 64, 8) -- row0 idle frames 0-7
+  S.pawnAnim = Assets.loadDirectionalFrames("assets/sprites", "crop_config.lua", 10)
   S.flagSheet = Assets.loadSpriteSheet("flag_spritesheet.png", 60, 60, 5) -- 5 frames
+
 
   -- Audio FFT + music volume
   S.audioFFT = AudioFFT.new("shadertoy.mp3")

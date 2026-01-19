@@ -35,7 +35,79 @@ local function drawTimerBar(x, y, w, h, pct)
   love.graphics.rectangle("line", x, y, w, h, 6, 6)
 end
 
+local function getPawnIdleDir(pawn, boardSize)
+  if pawn.col <= boardSize / 2 then
+    return "right"
+  end
+  return "left"
+end
+
+local function getPawnIdleFrame(anim, t)
+  if not anim or not anim.frames or #anim.frames == 0 then
+    return 1
+  end
+  local frameCount = math.min(4, #anim.frames)
+  local fps = anim.fps * 0.5
+  return (math.floor(t * fps) % frameCount) + 1
+end
+
+local function getPawnMoveFrame(anim, t)
+  if not anim or not anim.frames or #anim.frames == 0 then
+    return 1
+  end
+  local first = math.min(20, #anim.frames)
+  local last = math.min(40, #anim.frames)
+  if last < first then
+    first, last = 1, #anim.frames
+  end
+  local range = math.max(1, last - first + 1)
+  local fps = anim.fps * 0.5
+  return first + (math.floor(t * fps) % range)
+end
+
+local function getPawnAnchor(anim, dir)
+  if not anim or not anim.crop or not anim.crop[dir] then
+    return 0, 0
+  end
+
+  local rect = anim.crop[dir]
+  local anchor = anim.anchors and anim.anchors[dir]
+  local ax = rect.w * 0.5
+  local ay = rect.h * 0.5
+  if anchor then
+    ax = U.clamp(anchor.x or ax, 0, rect.w)
+    ay = U.clamp(anchor.y or ay, 0, rect.h)
+  end
+  return ax, ay
+end
+
+local pawnTintShader = nil
+
+local function getPawnTintShader()
+  if pawnTintShader then
+    return pawnTintShader
+  end
+
+  pawnTintShader = love.graphics.newShader([[
+    extern vec3 targetColor;
+    extern vec3 replaceColor;
+    extern float threshold;
+
+    vec4 effect(vec4 color, Image tex, vec2 tc, vec2 sc) {
+      vec4 px = Texel(tex, tc);
+      float dist = distance(px.rgb, targetColor);
+      if (dist <= threshold) {
+        px.rgb = replaceColor;
+      }
+      return px * color;
+    }
+  ]])
+
+  return pawnTintShader
+end
+
 local function drawLegend(S, x, y)
+
   love.graphics.setFont(S.fonts.small)
   U.setColor255(255, 255, 255, 255)
   love.graphics.print("Legend", x + 70, y)
@@ -223,7 +295,65 @@ local function drawMenu(S)
   end
 end
 
+local function drawAnimatedPawn(S, pawn, x, y, pawnSize, dir, frameIndex, allowPulse)
+  local anim = S.pawnAnim
+  local pulse = allowPulse and S.selectedPawn and pawn == S.selectedPawn
+  if anim and anim.frames and #anim.frames > 0 then
+    local frame = anim.frames[frameIndex] or anim.frames[1]
+    local quad = frame.quads and frame.quads[dir]
+    local rect = anim.crop and anim.crop[dir]
+    if quad and rect then
+      local scale = pawnSize / math.max(rect.w, rect.h)
+      if pulse then
+        scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
+      end
+
+      local ax, ay = getPawnAnchor(anim, dir)
+      local anchorOffset = rect.h * 0.18
+      local shader = getPawnTintShader()
+      local target = {0x74 / 255, 0x75 / 255, 0x7c / 255}
+      local replace = {
+        pawn.player.color[1] / 255,
+        pawn.player.color[2] / 255,
+        pawn.player.color[3] / 255,
+      }
+      scale = scale * (pawn.player.scaleBoost or 1.0)
+      shader:send("targetColor", target)
+      shader:send("replaceColor", replace)
+      shader:send("threshold", 0.08)
+      love.graphics.setShader(shader)
+      U.setColor255(255, 255, 255, 255)
+      love.graphics.draw(
+        frame.image, quad,
+        x, y,
+        0,
+        scale, scale,
+        ax, ay + anchorOffset
+      )
+      love.graphics.setShader()
+      return
+    end
+  end
+
+  local canvas = pawn.player.pawnCanvas
+  local scale = pawnSize / Config.PAWN_CANVAS_SIZE
+  if pulse then
+    scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
+  end
+  scale = scale * (pawn.player.scaleBoost or 1.0)
+  local anchorOffset = Config.PAWN_CANVAS_SIZE * 0.18
+  U.setColor255(255, 255, 255, 255)
+  love.graphics.draw(
+    canvas,
+    x, y,
+    0,
+    scale, scale,
+    Config.PAWN_CANVAS_SIZE / 2, Config.PAWN_CANVAS_SIZE + anchorOffset
+  )
+end
+
 local function drawBoard(S)
+
   local w, h = love.graphics.getDimensions()
   drawDim(70)
 
@@ -237,9 +367,13 @@ local function drawBoard(S)
 
   local startX = math.floor((w - (boardSize * cellSize)) / 2)
   local startY = math.floor((h - (boardSize * cellSize)) / 2)
-  local pawnSize = math.floor(cellSize * 0.7)
+  local pawnSize = math.floor(cellSize * 0.85)
+
+  local moveAnim = S.moveAnim
+  local movingPawn = moveAnim and moveAnim.pawn or nil
 
   local moves = S.selectedPawn and Game.getValidMoves(S, S.selectedPawn, boardSize) or {}
+
   local moveSet = {}
   for _, m in ipairs(moves) do
     moveSet[m[1] .. "," .. m[2]] = true
@@ -250,6 +384,9 @@ local function drawBoard(S)
       local cell = S.board[r][c]
       local x = startX + (c - 1) * cellSize
       local y = startY + (r - 1) * cellSize
+      local centerX = x + cellSize / 2
+      local bottomY = y + cellSize
+
 
       local cellR, cellG, cellB = 180, 180, 180
       local cellA = 240
@@ -290,7 +427,9 @@ local function drawBoard(S)
       if cell.pawn then
         local pawn = cell.pawn
 
-        if pawn.isFlag then
+        if movingPawn and pawn == movingPawn then
+          -- drawn after board for movement interpolation
+        elseif pawn.isFlag then
           -- animated flag (5 frames) tinted to player color
           if S.flagSheet and S.flagSheet.image and S.flagSheet.quads then
             local sheet = S.flagSheet
@@ -306,10 +445,10 @@ local function drawBoard(S)
             U.setColor255(pawn.player.color[1], pawn.player.color[2], pawn.player.color[3], 255)
             love.graphics.draw(
               sheet.image, quad,
-              x + cellSize / 2, y + cellSize / 2,
+              centerX, bottomY,
               0,
               scale, scale,
-              sheet.frame_w / 2, sheet.frame_h / 2
+              sheet.frame_w / 2, sheet.frame_h
             )
             U.setColor255(255, 255, 255, 255)
           else
@@ -318,56 +457,38 @@ local function drawBoard(S)
             U.setColor255(255, 255, 255, 255)
             love.graphics.draw(
               canvas,
-              x + cellSize / 2, y + cellSize / 2,
+              centerX, bottomY,
               0,
               scale, scale,
-              Config.PAWN_CANVAS_SIZE / 2, Config.PAWN_CANVAS_SIZE / 2
+              Config.PAWN_CANVAS_SIZE / 2, Config.PAWN_CANVAS_SIZE
             )
           end
         else
-          -- pawn idle row0 frames 0-7
-          if S.pawnSheet and S.pawnSheet.image and S.pawnSheet.quads then
-            local sheet = S.pawnSheet
-            local fps = 8
-            local frame = math.floor(love.timer.getTime() * fps) % 8 -- 0..7
-            local quad = sheet.quads[1 + frame]
-
-            local scale = pawnSize / sheet.frame_w
-            if S.selectedPawn and pawn == S.selectedPawn then
-              scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
-            end
-
-            U.setColor255(pawn.player.color[1], pawn.player.color[2], pawn.player.color[3], 255)
-            love.graphics.draw(
-              sheet.image, quad,
-              x + cellSize / 2, y + cellSize / 2,
-              0,
-              scale, scale,
-              sheet.frame_w / 2, sheet.frame_h / 2
-            )
-            U.setColor255(255, 255, 255, 255)
-          else
-            local canvas = pawn.player.pawnCanvas
-            local scale = pawnSize / Config.PAWN_CANVAS_SIZE
-            if S.selectedPawn and pawn == S.selectedPawn then
-              scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
-            end
-            U.setColor255(255, 255, 255, 255)
-            love.graphics.draw(
-              canvas,
-              x + cellSize / 2, y + cellSize / 2,
-              0,
-              scale, scale,
-              Config.PAWN_CANVAS_SIZE / 2, Config.PAWN_CANVAS_SIZE / 2
-            )
-          end
+          local dir = getPawnIdleDir(pawn, boardSize)
+          local frameIndex = getPawnIdleFrame(S.pawnAnim, love.timer.getTime())
+          drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, dir, frameIndex, true)
         end
       end
+
     end
+  end
+
+  if moveAnim and moveAnim.pawn then
+    local denom = moveAnim.duration > 0 and moveAnim.duration or 1
+    local t = U.clamp(moveAnim.t / denom, 0, 1)
+    local fromX = startX + (moveAnim.fromCol - 1) * cellSize + cellSize / 2
+    local fromY = startY + moveAnim.fromRow * cellSize
+    local toX = startX + (moveAnim.toCol - 1) * cellSize + cellSize / 2
+    local toY = startY + moveAnim.toRow * cellSize
+    local x = fromX + (toX - fromX) * t
+    local y = fromY + (toY - fromY) * t
+    local frameIndex = getPawnMoveFrame(S.pawnAnim, moveAnim.t)
+    drawAnimatedPawn(S, moveAnim.pawn, x, y, pawnSize, moveAnim.dir, frameIndex, false)
   end
 
   drawHUD(S)
 end
+
 
 local function drawQuestionModal(S)
   local w, h = love.graphics.getDimensions()

@@ -4,7 +4,48 @@ local U      = require("src.util")
 
 local Assets = {}
 
+local function endsWith(value, suffix)
+  return value:sub(-#suffix):lower() == suffix:lower()
+end
+
+local function extractNumber(value)
+  local n = value:match("(%d+)")
+  return n and tonumber(n) or nil
+end
+
+local function naturalSort(a, b)
+  local na = extractNumber(a)
+  local nb = extractNumber(b)
+  if na and nb and na ~= nb then return na < nb end
+  return a:lower() < b:lower()
+end
+
+local function clamp(value, lo, hi)
+  if value < lo then return lo end
+  if value > hi then return hi end
+  return value
+end
+
+local function loadCropConfig(path)
+  if not path or not love.filesystem.getInfo(path) then
+    return nil
+  end
+
+  local chunk = love.filesystem.load(path)
+  if not chunk then
+    return nil
+  end
+
+  local ok, loaded = pcall(chunk)
+  if ok then
+    return loaded
+  end
+
+  return nil
+end
+
 function Assets.tryLoadImage(path)
+
   if love.filesystem.getInfo(path) then
     local img = love.graphics.newImage(path)
     img:setFilter("linear", "linear")
@@ -104,4 +145,88 @@ function Assets.loadSpriteSheet(path, frame_w, frame_h, columns, rows)
   }
 end
 
+function Assets.loadDirectionalFrames(spriteDir, cropConfigPath, fps)
+  if not love.filesystem.getInfo(spriteDir) then
+    return nil
+  end
+
+  local items = love.filesystem.getDirectoryItems(spriteDir)
+  local pngs = {}
+  for _, name in ipairs(items) do
+    if endsWith(name, ".png") then
+      table.insert(pngs, name)
+    end
+  end
+
+  table.sort(pngs, naturalSort)
+  if #pngs == 0 then
+    return nil
+  end
+
+  local crop = {
+    up = { x = 0, y = 0, w = 32, h = 32 },
+    down = { x = 0, y = 0, w = 32, h = 32 },
+    left = { x = 0, y = 0, w = 32, h = 32 },
+    right = { x = 0, y = 0, w = 32, h = 32 },
+  }
+
+  local anchors = {}
+  local loaded = loadCropConfig(cropConfigPath)
+  if loaded then
+    local loadedCrop = loaded.crop or loaded
+    local loadedAnchor = loaded.anchor or {}
+    for dir, data in pairs(loadedCrop or {}) do
+      if crop[dir] and type(data) == "table" then
+        crop[dir] = {
+          x = tonumber(data.x) or crop[dir].x,
+          y = tonumber(data.y) or crop[dir].y,
+          w = tonumber(data.w) or crop[dir].w,
+          h = tonumber(data.h) or crop[dir].h,
+        }
+      end
+    end
+
+    for dir, data in pairs(loadedAnchor or {}) do
+      if type(data) == "table" then
+        anchors[dir] = {
+          x = tonumber(data.x) or 0,
+          y = tonumber(data.y) or 0,
+        }
+      end
+    end
+  end
+
+  local frames = {}
+  local dirs = { "down", "left", "right", "up" }
+  for _, filename in ipairs(pngs) do
+    local path = spriteDir .. "/" .. filename
+    local img = love.graphics.newImage(path)
+    img:setFilter("nearest", "nearest")
+
+    local iw, ih = img:getDimensions()
+    local quads = {}
+    for _, dir in ipairs(dirs) do
+      local rect = crop[dir]
+      local x = clamp(rect.x, 0, iw - 1)
+      local y = clamp(rect.y, 0, ih - 1)
+      local w = clamp(rect.w, 1, iw - x)
+      local h = clamp(rect.h, 1, ih - y)
+      quads[dir] = love.graphics.newQuad(x, y, w, h, iw, ih)
+    end
+
+    table.insert(frames, {
+      image = img,
+      quads = quads,
+    })
+  end
+
+  return {
+    frames = frames,
+    crop = crop,
+    anchors = anchors,
+    fps = fps or 10,
+  }
+end
+
 return Assets
+

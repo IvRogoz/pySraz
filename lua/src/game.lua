@@ -31,7 +31,10 @@ local function buildPlayersAndPawns(S, numPlayers, boardSize)
       score = 0,
       pawnCanvas = nil,
       flagCanvas = nil,
+      scaleBoost = (i == 1) and 1.3 or (i == 4) and 1.3 or 1.0,
+
     }
+
 
     if S.pawnBaseImg and S.flagBaseImg then
       p.pawnCanvas = Assets.makeTintedCanvas(S.pawnBaseImg, p.color, 1.0)
@@ -192,6 +195,8 @@ local function applyPendingAction(S, success)
   local fromPawn = act.pawn
   local tr, tc = act.toR, act.toC
   local targetCell = S.board[tr][tc]
+  local fromRow, fromCol = fromPawn.row, fromPawn.col
+
 
   if act.type == "attack" and targetCell.pawn and targetCell.pawn.player ~= fromPawn.player then
     local victim = targetCell.pawn
@@ -208,7 +213,30 @@ local function applyPendingAction(S, success)
   fromPawn.row, fromPawn.col = tr, tc
   targetCell.pawn = fromPawn
 
+  local dir
+  if tr < fromRow then
+    dir = "down"
+  elseif tr > fromRow then
+    dir = "up"
+  elseif tc < fromCol then
+    dir = "left"
+  else
+    dir = "right"
+  end
+
+  S.moveAnim = {
+    pawn = fromPawn,
+    fromRow = fromRow,
+    fromCol = fromCol,
+    toRow = tr,
+    toCol = tc,
+    dir = dir,
+    t = 0,
+    duration = 0.45,
+  }
+
   startFeedback(S, true, function()
+
     S.selectedPawn = nil
     S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
   end)
@@ -262,7 +290,9 @@ function Game.buildMenuButtons(S)
     S.questionUI = nil
     S.feedbackUI = nil
     S.pendingAction = nil
+    S.moveAnim = nil
     S.state.mode = "game"
+
   end
 
   S.menuButtons = {
@@ -291,7 +321,15 @@ end
 -- Update + input
 -- -----------------------------
 function Game.update(S, dt)
+  if S.moveAnim then
+    S.moveAnim.t = S.moveAnim.t + dt
+    if S.moveAnim.t >= S.moveAnim.duration then
+      S.moveAnim = nil
+    end
+  end
+
   if S.feedbackUI then
+
     S.feedbackUI.t = S.feedbackUI.t + dt
     if S.feedbackUI.t >= S.feedbackUI.duration then
       local done = S.feedbackUI.onDone
