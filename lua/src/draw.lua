@@ -49,86 +49,75 @@ local function getPawnIdleDir(pawn, boardSize)
 end
 
 
-local function getPawnIdleFrame(anim, t)
-  if not anim or not anim.frames or #anim.frames == 0 then
+local function getPawnIdleFrame(anim, t, offsetFrames)
+  if not anim or not anim.idle then
     return 1
   end
-  local frameCount = math.min(4, #anim.frames)
-  local fps = anim.fps * 0.5
-  return (math.floor(t * fps) % frameCount) + 1
+  local frameCount = 4
+  local fps = (anim.fps or 8) * 0.5
+  local offset = offsetFrames or 0
+  return ((math.floor(t * fps) + offset) % frameCount) + 1
 end
 
 local function getPawnMoveFrame(anim, t)
-  if not anim or not anim.frames or #anim.frames == 0 then
+  if not anim or not anim.walk then
     return 1
   end
-  local first = math.min(20, #anim.frames)
-  local last = math.min(40, #anim.frames)
-  if last < first then
-    first, last = 1, #anim.frames
-  end
-  local range = math.max(1, last - first + 1)
-  local fps = anim.fps * 0.5
-  return first + (math.floor(t * fps) % range)
+  local frameCount = 6
+  local fps = (anim.fps or 8) * 0.5
+  return (math.floor(t * fps) % frameCount) + 1
 end
 
 local function getPawnAttackFrame(anim, t, duration)
-  if not anim or not anim.frames or #anim.frames == 0 then
+  if not anim or not anim.attack then
     return 1
   end
-  local first = math.min(12, #anim.frames)
-  local last = math.min(19, #anim.frames)
-  if last < first then
-    first, last = 1, #anim.frames
-  end
-  local range = math.max(1, last - first + 1)
-  if range == 1 then
-    return first
-  end
-
+  local frameCount = 4
   local progress = 0
   if duration and duration > 0 then
     progress = U.clamp(t / duration, 0, 1)
   end
-  return first + math.floor(progress * (range - 1))
+  return 1 + math.floor(progress * (frameCount - 1))
 end
 
 local function getPawnDeathFrame(anim, t, duration)
-  if not anim or not anim.frames or #anim.frames == 0 then
-    return 1
+  if not anim or not anim.death then
+    return 6
   end
-  local first = math.min(62, #anim.frames)
-  local last = math.min(74, #anim.frames)
-  if last < first then
-    first, last = 1, #anim.frames
-  end
-  local range = math.max(1, last - first + 1)
-  if range == 1 then
-    return first
-  end
-
+  local frameCount = 3
   local progress = 0
   if duration and duration > 0 then
     progress = U.clamp(t / duration, 0, 1)
   end
-  return first + math.floor(progress * (range - 1))
+  return 6 + math.floor(progress * (frameCount - 1))
+end
+
+local function getPawnSheathFrame(anim, t, duration, reverse)
+  if not anim or not anim.death then
+    return 1
+  end
+  local frameCount = 3
+  local progress = 0
+  if duration and duration > 0 then
+    progress = U.clamp(t / duration, 0, 1)
+  end
+  local frame = 1 + math.floor(progress * (frameCount - 1))
+  if reverse then
+    frame = frameCount - frame + 1
+  end
+  return frame
 end
 
 
-local function getPawnAnchor(anim, dir)
-  if not anim or not anim.crop or not anim.crop[dir] then
-    return 0, 0
+local function getDirRow(dir)
+  if dir == "down" then
+    return 1
+  elseif dir == "up" then
+    return 2
+  elseif dir == "right" then
+    return 3
   end
-
-  local rect = anim.crop[dir]
-  local anchor = anim.anchors and anim.anchors[dir]
-  local ax = rect.w * 0.5
-  local ay = rect.h * 0.5
-  if anchor then
-    ax = U.clamp(anchor.x or ax, 0, rect.w)
-    ay = U.clamp(anchor.y or ay, 0, rect.h)
-  end
-  return ax, ay
+  return 4
 end
 
 local pawnTintShader = nil
@@ -215,7 +204,8 @@ local function drawCurrentPlayerPanel(S, x, y)
       scaleBoost = 1.0,
     },
   }
-  drawAnimatedPawn(S, previewPawn, x + 110, y + 240, 170, "left", frameIndex, true)
+  local row = getDirRow("left")
+  drawAnimatedPawn(S, previewPawn, x + 110, y + 240, 300, S.pawnAnim and S.pawnAnim.idle, row, frameIndex, true)
 
 
   love.graphics.setFont(S.fonts.name)
@@ -371,44 +361,38 @@ local function drawMenu(S)
   end
 end
 
-drawAnimatedPawn = function(S, pawn, x, y, pawnSize, dir, frameIndex, allowPulse)
+drawAnimatedPawn = function(S, pawn, x, y, pawnSize, sheet, row, col, allowPulse)
   local anim = S.pawnAnim
   local pulse = allowPulse and S.selectedPawn and pawn == S.selectedPawn
-  if anim and anim.frames and #anim.frames > 0 then
-    local frame = anim.frames[frameIndex] or anim.frames[1]
-    local quad = frame.quads and frame.quads[dir]
-    local rect = anim.crop and anim.crop[dir]
-    if quad and rect then
-      local scale = pawnSize / math.max(rect.w, rect.h)
-      if pulse then
-        scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
-      end
-
-      local ax, ay = getPawnAnchor(anim, dir)
-      local anchorOffset = rect.h * 0.18
-      local shader = getPawnTintShader()
-      local target = {0x74 / 255, 0x75 / 255, 0x7c / 255}
-      local replace = {
-        pawn.player.color[1] / 255,
-        pawn.player.color[2] / 255,
-        pawn.player.color[3] / 255,
-      }
-      scale = scale * (pawn.player.scaleBoost or 1.0)
-      shader:send("targetColor", target)
-      shader:send("replaceColor", replace)
-      shader:send("threshold", 0.08)
-      love.graphics.setShader(shader)
-      U.setColor255(255, 255, 255, 255)
-      love.graphics.draw(
-        frame.image, quad,
-        x, y,
-        0,
-        scale, scale,
-        ax, ay + anchorOffset
-      )
-      love.graphics.setShader()
-      return
+  if anim and sheet and sheet.image and sheet.quads and sheet.quads[row] and sheet.quads[row][col] then
+    local scale = pawnSize / anim.frameSize
+    if pulse then
+      scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
     end
+
+    local shader = getPawnTintShader()
+    local target = {0x74 / 255, 0x75 / 255, 0x7c / 255}
+    local replace = {
+      pawn.player.color[1] / 255,
+      pawn.player.color[2] / 255,
+      pawn.player.color[3] / 255,
+    }
+    scale = scale * 1.0
+    shader:send("targetColor", target)
+    shader:send("replaceColor", replace)
+    shader:send("threshold", 0.08)
+    love.graphics.setShader(shader)
+    U.setColor255(255, 255, 255, 255)
+    local anchorOffset = anim.frameSize * -0.2
+    love.graphics.draw(
+      sheet.image, sheet.quads[row][col],
+      x, y,
+      0,
+      scale, scale,
+      anim.frameSize / 2, anim.frameSize + anchorOffset
+    )
+    love.graphics.setShader()
+    return
   end
 
   local canvas = pawn.player.pawnCanvas
@@ -416,9 +400,9 @@ drawAnimatedPawn = function(S, pawn, x, y, pawnSize, dir, frameIndex, allowPulse
   if pulse then
     scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
   end
-  scale = scale * (pawn.player.scaleBoost or 1.0)
-  local anchorOffset = Config.PAWN_CANVAS_SIZE * 0.18
+  scale = scale * 1.0
   U.setColor255(255, 255, 255, 255)
+  local anchorOffset = Config.PAWN_CANVAS_SIZE * -0.1
   love.graphics.draw(
     canvas,
     x, y,
@@ -443,7 +427,7 @@ local function drawBoard(S)
 
   local startX = math.floor((w - (boardSize * cellSize)) / 2)
   local startY = math.floor((h - (boardSize * cellSize)) / 2)
-  local pawnSize = math.floor(cellSize * 0.85)
+  local pawnSize = math.floor(cellSize * 1.25)
 
   local moveAnim = S.moveAnim
   local movingPawn = moveAnim and moveAnim.pawn or nil
@@ -451,6 +435,8 @@ local function drawBoard(S)
   local attackingPawn = attackAnim and attackAnim.pawn or nil
   local deathAnim = S.deathAnim
   local dyingPawn = deathAnim and deathAnim.pawn or nil
+  local sheathAnim = S.sheathAnim
+  local sheathingPawn = sheathAnim and sheathAnim.pawn or nil
 
   local moves = S.selectedPawn and Game.getValidMoves(S, S.selectedPawn, boardSize) or {}
 
@@ -512,9 +498,22 @@ local function drawBoard(S)
           -- drawn after board for movement interpolation
         elseif dyingPawn and pawn == dyingPawn then
           -- drawn after board as death animation
+        elseif sheathingPawn and pawn == sheathingPawn then
+          local reverse = sheathAnim.mode == "sheath"
+          local frameIndex = getPawnSheathFrame(S.pawnAnim, sheathAnim.t, sheathAnim.duration, reverse)
+          local row = getDirRow(sheathAnim.dir)
+          drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, S.pawnAnim and S.pawnAnim.death, row, frameIndex, false)
         elseif attackingPawn and pawn == attackingPawn then
           local frameIndex = getPawnAttackFrame(S.pawnAnim, attackAnim.t, attackAnim.duration)
-          drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, attackAnim.dir, frameIndex, false)
+          local row = getDirRow(attackAnim.dir)
+          if attackAnim.choice == 3 then
+            row = row + 4
+          end
+          local col = frameIndex
+          if attackAnim.choice == 2 then
+            col = col + 4
+          end
+          drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, S.pawnAnim and S.pawnAnim.attack, row, col, false)
         elseif pawn.isFlag then
 
           -- animated flag (5 frames) tinted to player color
@@ -525,6 +524,7 @@ local function drawBoard(S)
             local quad = sheet.quads[1 + frame]
 
             local scale = pawnSize / sheet.frame_w
+            scale = scale * 0.8
             if S.selectedPawn and pawn == S.selectedPawn then
               scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
             end
@@ -544,6 +544,7 @@ local function drawBoard(S)
           else
             local canvas = pawn.player.flagCanvas
             local scale = pawnSize / Config.PAWN_CANVAS_SIZE
+            scale = scale * 0.8
             local flip = pawn.player.index == 2 or pawn.player.index == 3
             local sx = flip and -scale or scale
             U.setColor255(255, 255, 255, 255)
@@ -558,8 +559,9 @@ local function drawBoard(S)
           end
         else
           local dir = getPawnIdleDir(pawn, boardSize)
-          local frameIndex = getPawnIdleFrame(S.pawnAnim, love.timer.getTime())
-          drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, dir, frameIndex, true)
+          local frameIndex = getPawnIdleFrame(S.pawnAnim, love.timer.getTime(), pawn.idleOffset)
+          local row = getDirRow(dir)
+          drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, S.pawnAnim and S.pawnAnim.idle, row, frameIndex, true)
         end
       end
 
@@ -570,7 +572,8 @@ local function drawBoard(S)
     local centerX = startX + (deathAnim.col - 1) * cellSize + cellSize / 2
     local bottomY = startY + deathAnim.row * cellSize
     local frameIndex = getPawnDeathFrame(S.pawnAnim, deathAnim.t, deathAnim.duration)
-    drawAnimatedPawn(S, deathAnim.pawn, centerX, bottomY, pawnSize, deathAnim.dir, frameIndex, false)
+    local row = getDirRow(deathAnim.dir)
+    drawAnimatedPawn(S, deathAnim.pawn, centerX, bottomY, pawnSize, S.pawnAnim and S.pawnAnim.death, row, frameIndex, false)
   end
 
   if moveAnim and moveAnim.pawn then
@@ -583,7 +586,8 @@ local function drawBoard(S)
     local x = fromX + (toX - fromX) * t
     local y = fromY + (toY - fromY) * t
     local frameIndex = getPawnMoveFrame(S.pawnAnim, moveAnim.t)
-    drawAnimatedPawn(S, moveAnim.pawn, x, y, pawnSize, moveAnim.dir, frameIndex, false)
+    local row = getDirRow(moveAnim.dir)
+    drawAnimatedPawn(S, moveAnim.pawn, x, y, pawnSize, S.pawnAnim and S.pawnAnim.walk, row, frameIndex, false)
   end
 
   drawHUD(S)

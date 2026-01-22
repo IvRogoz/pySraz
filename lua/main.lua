@@ -37,6 +37,8 @@ local S = {
   attackPending = nil,
   deathAnim = nil,
   deathPending = nil,
+  sheathAnim = nil,
+  movePending = nil,
 
 
   menuButtons = nil,
@@ -106,7 +108,7 @@ function love.load()
   if not S.flagBaseImg then print("Warning: flag.png missing -> using fallback") end
 
   -- Optional sprite sheets
-  S.pawnAnim = Assets.loadDirectionalFrames("assets/sprites", "crop_config.lua", 10)
+  S.pawnAnim = Assets.loadPawnAnimations()
   S.flagSheet = Assets.loadSpriteSheet("flag_spritesheet.png", 60, 60, 5) -- 5 frames
 
 

@@ -221,6 +221,7 @@ local function buildPlayersAndPawns(S, numPlayers, boardSize)
           col = c,
           isFlag = isFlag,
           homeSide = homeSide,
+          idleOffset = love.math.random(0, 3),
         })
       end
 
@@ -262,6 +263,7 @@ local function saveGameState(S)
       col = pawn.col,
       isFlag = pawn.isFlag,
       homeSide = pawn.homeSide,
+      idleOffset = pawn.idleOffset,
     })
   end
 
@@ -370,6 +372,7 @@ local function loadSavedGame(S)
         col = pawnData.col,
         isFlag = pawnData.isFlag,
         homeSide = homeSide,
+        idleOffset = pawnData.idleOffset or 0,
       }
       table.insert(S.pawns, pawn)
       if S.board[pawn.row] and S.board[pawn.row][pawn.col] then
@@ -558,30 +561,29 @@ local function executeActionResult(S, pending)
 
   current.score = current.score + pending.scoreDelta
 
-  S.board[fromPawn.row][fromPawn.col].pawn = nil
-  fromPawn.row, fromPawn.col = tr, tc
-  targetCell.pawn = fromPawn
+  S.resolvePending = pending
 
-  if isGameOver(S) then
-    clearSavedGame()
-    S.moveAnim = nil
-    S.selectedPawn = nil
-    S.questionUI = nil
-    S.feedbackUI = nil
-    S.pendingAction = nil
-    S.attackAnim = nil
-    S.attackPending = nil
-    S.deathAnim = nil
-    S.deathPending = nil
-    S.state.mode = "menu"
-    Game.buildMenuButtons(S)
-    return
+  if pending.moveAnim then
+    local fps = (S.pawnAnim and S.pawnAnim.fps or 8) * 0.5
+    local duration = 0.4
+    if fps > 0 then
+      duration = 3 / fps
+    end
+    S.sheathAnim = {
+      pawn = pending.moveAnim.pawn,
+      dir = pending.moveAnim.dir,
+      t = 0,
+      duration = duration,
+      mode = "sheath",
+    }
+    S.movePending = pending.moveAnim
+  else
+    S.movePending = nil
+    S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
+    saveGameState(S)
+    S.resolvePending = nil
   end
-
-  S.moveAnim = pending.moveAnim
   S.selectedPawn = nil
-  S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
-  saveGameState(S)
 end
 
 local function applyPendingAction(S, success)
@@ -637,17 +639,9 @@ local function applyPendingAction(S, success)
   startFeedback(S, true, function()
     if act.type == "attack" and victim then
       local duration = 0.6
-      if S.pawnAnim and S.pawnAnim.frames and #S.pawnAnim.frames > 0 then
-        local first = math.min(62, #S.pawnAnim.frames)
-        local last = math.min(74, #S.pawnAnim.frames)
-        if last < first then
-          first, last = 1, #S.pawnAnim.frames
-        end
-        local range = math.max(1, last - first + 1)
-        local fps = (S.pawnAnim.fps or 10) * 0.5
-        if fps > 0 then
-          duration = range / fps
-        end
+      local fps = (S.pawnAnim and S.pawnAnim.fps or 8) * 0.5
+      if fps > 0 then
+        duration = 3 / fps
       end
 
       local attackDir = getActionDir(tr, tc, fromRow, fromCol)
@@ -685,23 +679,17 @@ local function askForAction(S, actType, pawn, toR, toC, category)
 
   if actType == "attack" then
     local dir = getActionDir(pawn.row, pawn.col, toR, toC)
+    local choice = love.math.random(1, 3)
     local duration = 0.6
-    if S.pawnAnim and S.pawnAnim.frames and #S.pawnAnim.frames > 0 then
-      local first = math.min(12, #S.pawnAnim.frames)
-      local last = math.min(19, #S.pawnAnim.frames)
-      if last < first then
-        first, last = 1, #S.pawnAnim.frames
-      end
-      local range = math.max(1, last - first + 1)
-      local fps = (S.pawnAnim.fps or 10) * 0.5
-      if fps > 0 then
-        duration = range / fps
-      end
+    local fps = (S.pawnAnim and S.pawnAnim.fps or 8) * 0.5
+    if fps > 0 then
+      duration = 4 / fps
     end
 
     S.attackAnim = {
       pawn = pawn,
       dir = dir,
+      choice = choice,
       t = 0,
       duration = duration,
     }
@@ -756,6 +744,8 @@ function Game.buildMenuButtons(S)
     S.attackPending = nil
     S.deathAnim = nil
     S.deathPending = nil
+    S.sheathAnim = nil
+    S.movePending = nil
     S.state.mode = "game"
     saveGameState(S)
   end
@@ -806,7 +796,31 @@ function Game.update(S, dt)
   if S.moveAnim then
     S.moveAnim.t = S.moveAnim.t + dt
     if S.moveAnim.t >= S.moveAnim.duration then
+      local dir = S.moveAnim.dir
+      local pawn = S.moveAnim.pawn
+      local pending = S.resolvePending
       S.moveAnim = nil
+
+      if pending and pawn then
+        S.board[pending.fromPawn.row][pending.fromPawn.col].pawn = nil
+        pending.fromPawn.row, pending.fromPawn.col = pending.toRow, pending.toCol
+        pending.targetCell.pawn = pending.fromPawn
+      end
+
+      if pawn then
+        local fps = (S.pawnAnim and S.pawnAnim.fps or 8) * 0.5
+        local duration = 0.3
+        if fps > 0 then
+          duration = 2 / fps
+        end
+        S.sheathAnim = {
+          pawn = pawn,
+          dir = dir,
+          t = 0,
+          duration = duration,
+          mode = "draw",
+        }
+      end
     end
   end
 
@@ -834,7 +848,45 @@ function Game.update(S, dt)
     end
   end
 
-  if S.attackAnim or S.deathAnim then
+  if S.sheathAnim then
+    S.sheathAnim.t = S.sheathAnim.t + dt
+    if S.sheathAnim.t >= S.sheathAnim.duration then
+      local mode = S.sheathAnim.mode
+      local pendingMove = S.movePending
+      local pending = S.resolvePending
+      S.sheathAnim = nil
+      if mode == "sheath" and pendingMove then
+        S.moveAnim = pendingMove
+        S.movePending = nil
+      elseif mode == "draw" and pending then
+        if isGameOver(S) then
+          clearSavedGame()
+          S.moveAnim = nil
+          S.selectedPawn = nil
+          S.questionUI = nil
+          S.feedbackUI = nil
+          S.pendingAction = nil
+          S.attackAnim = nil
+          S.attackPending = nil
+          S.deathAnim = nil
+          S.deathPending = nil
+          S.sheathAnim = nil
+          S.movePending = nil
+          S.resolvePending = nil
+          S.state.mode = "menu"
+          Game.buildMenuButtons(S)
+          return
+        end
+
+        S.selectedPawn = nil
+        S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
+        saveGameState(S)
+        S.resolvePending = nil
+      end
+    end
+  end
+
+  if S.attackAnim or S.deathAnim or S.sheathAnim then
     return
   end
 
@@ -861,7 +913,7 @@ end
 
 
 function Game.mousepressed(S, x, y, button)
-  if S.feedbackUI or S.attackAnim or S.deathAnim then return end
+  if S.feedbackUI or S.attackAnim or S.deathAnim or S.sheathAnim then return end
 
 
   if S.state.mode == "splash" then

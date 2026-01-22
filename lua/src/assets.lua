@@ -145,6 +145,49 @@ function Assets.loadSpriteSheet(path, frame_w, frame_h, columns, rows)
   }
 end
 
+function Assets.loadSpriteGrid(path, frameSize, rows, cols)
+  if not love.filesystem.getInfo(path) then
+    return nil
+  end
+
+  local img = love.graphics.newImage(path)
+  img:setFilter("nearest", "nearest")
+
+  local quads = {}
+  for row = 1, rows do
+    quads[row] = {}
+    for col = 1, cols do
+      local x = (col - 1) * frameSize
+      local y = (row - 1) * frameSize
+      quads[row][col] = love.graphics.newQuad(
+        x, y, frameSize, frameSize, img:getDimensions()
+      )
+    end
+  end
+
+  return {
+    image = img,
+    frameSize = frameSize,
+    rows = rows,
+    cols = cols,
+    quads = quads,
+  }
+end
+
+function Assets.loadPawnAnimations()
+  local frameSize = 64
+  local frameTime = 0.12
+
+  return {
+    frameSize = frameSize,
+    fps = 1 / frameTime,
+    idle = Assets.loadSpriteGrid("assets/idlewalk.png", frameSize, 8, 8),
+    walk = Assets.loadSpriteGrid("assets/walk.png", frameSize, 8, 6),
+    attack = Assets.loadSpriteGrid("assets/attack.png", frameSize, 8, 8),
+    death = Assets.loadSpriteGrid("assets/middleDeath.png", frameSize, 4, 8),
+  }
+end
+
 function Assets.loadDirectionalFrames(spriteDir, cropConfigPath, fps)
   if not love.filesystem.getInfo(spriteDir) then
     return nil
@@ -229,4 +272,3 @@ function Assets.loadDirectionalFrames(spriteDir, cropConfigPath, fps)
 end
 
 return Assets
-
