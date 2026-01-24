@@ -51,6 +51,9 @@ local S = {
   flagSheet = nil,
   tileSheet = nil,
   rockSprites = nil,
+  treeSheet = nil,
+  treeColumns = nil,
+  treeAnimFps = 6,
 
 
   -- optional low-res background render target (used by your shader background, if draw.lua uses it)
@@ -113,11 +116,30 @@ function love.load()
   S.pawnAnim = Assets.loadPawnAnimations()
   S.flagSheet = Assets.loadSpriteSheet("flag_spritesheet.png", 60, 60, 5) -- 5 frames
   S.tileSheet = Assets.loadSpriteSheet("assets/tiles.png", 96, 96, 2, 1)
-  S.rockSprites = {
-    Assets.tryLoadImage("assets/Rock1_1.png"),
-    Assets.tryLoadImage("assets/Rock5_1.png"),
-    Assets.tryLoadImage("assets/Rock6_1.png"),
-  }
+  S.rockSprites = {}
+  local rock1 = Assets.tryLoadImage("assets/Rock1_1.png")
+  local rock5 = Assets.tryLoadImage("assets/Rock5_1.png")
+  local rock6 = Assets.tryLoadImage("assets/Rock6_1.png")
+  if rock1 then table.insert(S.rockSprites, rock1) end
+  if rock5 then table.insert(S.rockSprites, rock5) end
+  if rock6 then table.insert(S.rockSprites, rock6) end
+
+  S.treeSheet = Assets.loadSpriteGridByCount("assets/Trees_animation.png", 13, 9)
+  S.treeColumns = {1, 4, 7}
+  if S.treeSheet and S.treeSheet.image and S.treeSheet.quads then
+    local col7X = 365
+    local iw, ih = S.treeSheet.image:getDimensions()
+    for row = 1, S.treeSheet.rows do
+      S.treeSheet.quads[row][7] = love.graphics.newQuad(
+        col7X,
+        (row - 1) * S.treeSheet.frame_h,
+        S.treeSheet.frame_w,
+        S.treeSheet.frame_h,
+        iw,
+        ih
+      )
+    end
+  end
 
 
   -- Audio FFT + music volume

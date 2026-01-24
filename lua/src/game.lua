@@ -275,6 +275,8 @@ local function saveGameState(S)
         category = cell.category,
         isHole = cell.isHole,
         rockIndex = cell.rockIndex,
+        treeCol = cell.treeCol,
+        treeOffset = cell.treeOffset,
       }
     end
   end
@@ -356,10 +358,33 @@ local function loadSavedGame(S)
       if cell.isHole and not rockIndex and S.rockSprites and #S.rockSprites > 0 then
         rockIndex = love.math.random(1, #S.rockSprites)
       end
+      local treeCol = cell.treeCol or cell.treeIndex
+      local treeOffset = cell.treeOffset
+      if treeCol and S.treeColumns then
+        local valid = false
+        for _, col in ipairs(S.treeColumns) do
+          if col == treeCol then
+            valid = true
+            break
+          end
+        end
+        if not valid then
+          treeCol = S.treeColumns[love.math.random(1, #S.treeColumns)]
+        end
+      end
+      if treeCol and not treeOffset then
+        if S.treeSheet and S.treeSheet.rows then
+          treeOffset = love.math.random(0, S.treeSheet.rows - 1)
+        else
+          treeOffset = love.math.random(0, 12)
+        end
+      end
       S.board[r][c] = {
         category = cell.category,
         isHole = cell.isHole,
         rockIndex = rockIndex,
+        treeCol = treeCol,
+        treeOffset = treeOffset,
         pawn = nil,
       }
     end
@@ -487,6 +512,31 @@ local function initBoard(S, boardSize)
     cell.isHole = true
     if S.rockSprites and #S.rockSprites > 0 then
       cell.rockIndex = love.math.random(1, #S.rockSprites)
+    end
+  end
+
+  if S.treeSheet and S.treeColumns and #S.treeColumns > 0 then
+    local treeChoices = {}
+    for r = 1, boardSize do
+      for c = 1, boardSize do
+        local cell = S.board[r][c]
+        if not cell.isHole and cell.pawn == nil then
+          table.insert(treeChoices, {r, c})
+        end
+      end
+    end
+
+    local treeCount = math.min(#treeChoices, math.ceil(boardSize * boardSize * 0.2))
+    for i = 1, treeCount do
+      local idx = love.math.random(#treeChoices)
+      local pos = table.remove(treeChoices, idx)
+      local cell = S.board[pos[1]][pos[2]]
+      cell.treeCol = S.treeColumns[love.math.random(1, #S.treeColumns)]
+      if S.treeSheet and S.treeSheet.rows then
+        cell.treeOffset = love.math.random(0, S.treeSheet.rows - 1)
+      else
+        cell.treeOffset = love.math.random(0, 12)
+      end
     end
   end
 end
@@ -673,7 +723,24 @@ local function askForAction(S, actType, pawn, toR, toC, category)
     category = category,
   }
 
-  local needed = (actType == "attack") and 2 or 1
+  local needed = 1
+  local targetCell = S.board[toR] and S.board[toR][toC]
+  local fromCell = S.board[pawn.row] and S.board[pawn.row][pawn.col]
+  if actType == "attack" then
+    if fromCell and fromCell.treeCol then
+      needed = 1
+    elseif targetCell and targetCell.treeCol then
+      needed = 4
+    else
+      needed = 2
+    end
+  else
+    if targetCell and targetCell.treeCol then
+      needed = 2
+    else
+      needed = 1
+    end
+  end
   local onFinish = function(ok)
     applyPendingAction(S, ok)
   end

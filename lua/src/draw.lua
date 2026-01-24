@@ -381,8 +381,15 @@ drawAnimatedPawn = function(S, pawn, x, y, pawnSize, sheet, row, col, allowPulse
     shader:send("targetColor", target)
     shader:send("replaceColor", replace)
     shader:send("threshold", 0.12)
+    local alpha = 255
+    if pawn.row and pawn.col and S.board and S.board[pawn.row] and S.board[pawn.row][pawn.col] then
+      local cell = S.board[pawn.row][pawn.col]
+      if cell and cell.treeCol then
+        alpha = 128
+      end
+    end
     love.graphics.setShader(shader)
-    U.setColor255(255, 255, 255, 255)
+    U.setColor255(255, 255, 255, alpha)
     local anchorOffset = anim.frameSize * -0.2
     love.graphics.draw(
       sheet.image, sheet.quads[row][col],
@@ -401,7 +408,14 @@ drawAnimatedPawn = function(S, pawn, x, y, pawnSize, sheet, row, col, allowPulse
     scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
   end
   scale = scale * 1.0
-  U.setColor255(255, 255, 255, 255)
+  local alpha = 255
+  if pawn.row and pawn.col and S.board and S.board[pawn.row] and S.board[pawn.row][pawn.col] then
+    local cell = S.board[pawn.row][pawn.col]
+    if cell and cell.treeCol then
+      alpha = 128
+    end
+  end
+  U.setColor255(255, 255, 255, alpha)
   local anchorOffset = Config.PAWN_CANVAS_SIZE * -0.1
   love.graphics.draw(
     canvas,
@@ -481,6 +495,28 @@ local function drawBoard(S)
       else
         U.setColor255(180, 180, 180, 240)
         love.graphics.rectangle("fill", x, y, cellSize, cellSize, 6, 6)
+      end
+
+      if cell.treeCol and S.treeSheet and S.treeSheet.image and S.treeSheet.quads then
+        local frame = 1
+        local fps = S.treeAnimFps or 6
+        local offset = cell.treeOffset or 0
+        if fps > 0 then
+          frame = (math.floor(love.timer.getTime() * fps) + offset) % S.treeSheet.rows + 1
+        end
+        local quad = S.treeSheet.quads[frame] and S.treeSheet.quads[frame][cell.treeCol]
+        if quad then
+          local scale = cellSize / math.max(S.treeSheet.frame_w, S.treeSheet.frame_h)
+          U.setColor255(255, 255, 255, 255)
+          love.graphics.draw(
+            S.treeSheet.image,
+            quad,
+            centerX, bottomY,
+            0,
+            scale, scale,
+            S.treeSheet.frame_w / 2, S.treeSheet.frame_h
+          )
+        end
       end
 
       if cell.isHole and S.rockSprites and #S.rockSprites > 0 then

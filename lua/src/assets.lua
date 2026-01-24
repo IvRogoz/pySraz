@@ -174,6 +174,39 @@ function Assets.loadSpriteGrid(path, frameSize, rows, cols)
   }
 end
 
+function Assets.loadSpriteGridByCount(path, rows, cols)
+  if not love.filesystem.getInfo(path) then
+    return nil
+  end
+
+  local img = love.graphics.newImage(path)
+  img:setFilter("nearest", "nearest")
+
+  local iw, ih = img:getDimensions()
+  local frame_w = iw / cols
+  local frame_h = ih / rows
+  local quads = {}
+  for row = 1, rows do
+    quads[row] = {}
+    for col = 1, cols do
+      local x = (col - 1) * frame_w
+      local y = (row - 1) * frame_h
+      quads[row][col] = love.graphics.newQuad(
+        x, y, frame_w, frame_h, iw, ih
+      )
+    end
+  end
+
+  return {
+    image = img,
+    frame_w = frame_w,
+    frame_h = frame_h,
+    rows = rows,
+    cols = cols,
+    quads = quads,
+  }
+end
+
 function Assets.loadPawnAnimations()
   local frameSize = 64
   local frameTime = 0.12
