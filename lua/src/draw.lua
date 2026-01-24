@@ -371,7 +371,7 @@ drawAnimatedPawn = function(S, pawn, x, y, pawnSize, sheet, row, col, allowPulse
     end
 
     local shader = getPawnTintShader()
-    local target = {0x74 / 255, 0x75 / 255, 0x7c / 255}
+    local target = {0xab / 255, 0x42 / 255, 0x5a / 255}
     local replace = {
       pawn.player.color[1] / 255,
       pawn.player.color[2] / 255,
@@ -380,7 +380,7 @@ drawAnimatedPawn = function(S, pawn, x, y, pawnSize, sheet, row, col, allowPulse
     scale = scale * 1.0
     shader:send("targetColor", target)
     shader:send("replaceColor", replace)
-    shader:send("threshold", 0.08)
+    shader:send("threshold", 0.12)
     love.graphics.setShader(shader)
     U.setColor255(255, 255, 255, 255)
     local anchorOffset = anim.frameSize * -0.2
@@ -437,6 +437,8 @@ local function drawBoard(S)
   local dyingPawn = deathAnim and deathAnim.pawn or nil
   local sheathAnim = S.sheathAnim
   local sheathingPawn = sheathAnim and sheathAnim.pawn or nil
+  local guardAnim = S.guardAnim
+  local guardingPawn = guardAnim and guardAnim.pawn or nil
 
   local moves = S.selectedPawn and Game.getValidMoves(S, S.selectedPawn, boardSize) or {}
 
@@ -455,31 +457,52 @@ local function drawBoard(S)
       local bottomY = y + cellSize
 
 
-      local cellR, cellG, cellB = 180, 180, 180
-      local cellA = 240
+      local overlayR, overlayG, overlayB, overlayA = nil, nil, nil, nil
 
-      -- holes: 50% transparent
-      if cell.isHole then
-        cellR, cellG, cellB = 0, 0, 0
-        cellA = 120
-      end
-
-      -- highlights override (keep opaque)
       if S.selectedPawn and r == S.selectedPawn.row and c == S.selectedPawn.col then
-        cellR, cellG, cellB = 255, 255, 0
-        cellA = 240
+        overlayR, overlayG, overlayB, overlayA = 255, 255, 0, 160
       elseif moveSet[r .. "," .. c] then
         if cell.pawn and cell.pawn.player ~= S.selectedPawn.player then
-          cellR, cellG, cellB = 255, 150, 150
-          cellA = 240
+          overlayR, overlayG, overlayB, overlayA = 255, 150, 150, 160
         else
-          cellR, cellG, cellB = 150, 255, 150
-          cellA = 240
+          overlayR, overlayG, overlayB, overlayA = 150, 255, 150, 160
         end
       end
 
-      U.setColor255(cellR, cellG, cellB, cellA)
-      love.graphics.rectangle("fill", x, y, cellSize, cellSize, 6, 6)
+      if S.tileSheet and S.tileSheet.image and S.tileSheet.quads then
+        local tileIndex = 1
+        if cell.pawn and cell.pawn.isFlag then
+          tileIndex = 2
+        end
+        local quad = S.tileSheet.quads[tileIndex]
+        local scale = cellSize / S.tileSheet.frame_w
+        U.setColor255(255, 255, 255, 255)
+        love.graphics.draw(S.tileSheet.image, quad, x, y, 0, scale, scale)
+      else
+        U.setColor255(180, 180, 180, 240)
+        love.graphics.rectangle("fill", x, y, cellSize, cellSize, 6, 6)
+      end
+
+      if cell.isHole and S.rockSprites and #S.rockSprites > 0 then
+        local rock = S.rockSprites[cell.rockIndex or 1]
+        if rock then
+          local rw, rh = rock:getDimensions()
+          local scale = cellSize / math.max(rw, rh)
+          U.setColor255(255, 255, 255, 255)
+          love.graphics.draw(
+            rock,
+            centerX, bottomY,
+            0,
+            scale, scale,
+            rw / 2, rh
+          )
+        end
+      end
+
+      if overlayR then
+        U.setColor255(overlayR, overlayG, overlayB, overlayA)
+        love.graphics.rectangle("fill", x, y, cellSize, cellSize, 6, 6)
+      end
 
       U.setColor255(10, 10, 10, 255)
       love.graphics.rectangle("line", x, y, cellSize, cellSize, 6, 6)
@@ -514,6 +537,9 @@ local function drawBoard(S)
             col = col + 4
           end
           drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, S.pawnAnim and S.pawnAnim.attack, row, col, false)
+        elseif guardingPawn and pawn == guardingPawn and not pawn.isFlag then
+          local row = getDirRow(guardAnim.dir) + 4
+          drawAnimatedPawn(S, pawn, centerX, bottomY, pawnSize, S.pawnAnim and S.pawnAnim.idle, row, 1, false)
         elseif pawn.isFlag then
 
           -- animated flag (5 frames) tinted to player color

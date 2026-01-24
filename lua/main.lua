@@ -38,7 +38,7 @@ local S = {
   deathAnim = nil,
   deathPending = nil,
   sheathAnim = nil,
-  movePending = nil,
+  guardAnim = nil,
 
 
   menuButtons = nil,
@@ -49,6 +49,8 @@ local S = {
 
   pawnAnim = nil,
   flagSheet = nil,
+  tileSheet = nil,
+  rockSprites = nil,
 
 
   -- optional low-res background render target (used by your shader background, if draw.lua uses it)
@@ -110,6 +112,12 @@ function love.load()
   -- Optional sprite sheets
   S.pawnAnim = Assets.loadPawnAnimations()
   S.flagSheet = Assets.loadSpriteSheet("flag_spritesheet.png", 60, 60, 5) -- 5 frames
+  S.tileSheet = Assets.loadSpriteSheet("assets/tiles.png", 96, 96, 2, 1)
+  S.rockSprites = {
+    Assets.tryLoadImage("assets/Rock1_1.png"),
+    Assets.tryLoadImage("assets/Rock5_1.png"),
+    Assets.tryLoadImage("assets/Rock6_1.png"),
+  }
 
 
   -- Audio FFT + music volume

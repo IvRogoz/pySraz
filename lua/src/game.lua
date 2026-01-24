@@ -274,6 +274,7 @@ local function saveGameState(S)
       data.board[r][c] = {
         category = cell.category,
         isHole = cell.isHole,
+        rockIndex = cell.rockIndex,
       }
     end
   end
@@ -351,9 +352,14 @@ local function loadSavedGame(S)
     S.board[r] = {}
     for c = 1, #(decoded.board[r] or {}) do
       local cell = decoded.board[r][c]
+      local rockIndex = cell.rockIndex
+      if cell.isHole and not rockIndex and S.rockSprites and #S.rockSprites > 0 then
+        rockIndex = love.math.random(1, #S.rockSprites)
+      end
       S.board[r][c] = {
         category = cell.category,
         isHole = cell.isHole,
+        rockIndex = rockIndex,
         pawn = nil,
       }
     end
@@ -392,6 +398,7 @@ local function loadSavedGame(S)
   S.deathAnim = nil
   S.deathPending = nil
   S.state.mode = "game"
+  S.guardAnim = nil
 
   return true
 end
@@ -476,7 +483,11 @@ local function initBoard(S, boardSize)
   for i = 1, count do
     local idx = love.math.random(#free)
     local pos = table.remove(free, idx)
-    S.board[pos[1]][pos[2]].isHole = true
+    local cell = S.board[pos[1]][pos[2]]
+    cell.isHole = true
+    if S.rockSprites and #S.rockSprites > 0 then
+      cell.rockIndex = love.math.random(1, #S.rockSprites)
+    end
   end
 end
 
@@ -536,9 +547,9 @@ end
 
 local function getActionDir(fromRow, fromCol, toRow, toCol)
   if toRow < fromRow then
-    return "down"
-  elseif toRow > fromRow then
     return "up"
+  elseif toRow > fromRow then
+    return "down"
   elseif toCol < fromCol then
     return "left"
   end
@@ -564,21 +575,9 @@ local function executeActionResult(S, pending)
   S.resolvePending = pending
 
   if pending.moveAnim then
-    local fps = (S.pawnAnim and S.pawnAnim.fps or 8) * 0.5
-    local duration = 0.4
-    if fps > 0 then
-      duration = 3 / fps
-    end
-    S.sheathAnim = {
-      pawn = pending.moveAnim.pawn,
-      dir = pending.moveAnim.dir,
-      t = 0,
-      duration = duration,
-      mode = "sheath",
-    }
-    S.movePending = pending.moveAnim
+    S.moveAnim = pending.moveAnim
   else
-    S.movePending = nil
+    S.moveAnim = nil
     S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
     saveGameState(S)
     S.resolvePending = nil
@@ -597,6 +596,7 @@ local function applyPendingAction(S, success)
   if not success then
     startFeedback(S, false, function()
       S.selectedPawn = nil
+      S.guardAnim = nil
       S.currentPlayerIndex = (S.currentPlayerIndex % #S.players) + 1
     end)
     return
@@ -637,6 +637,7 @@ local function applyPendingAction(S, success)
   }
 
   startFeedback(S, true, function()
+    S.guardAnim = nil
     if act.type == "attack" and victim then
       local duration = 0.6
       local fps = (S.pawnAnim and S.pawnAnim.fps or 8) * 0.5
@@ -678,6 +679,14 @@ local function askForAction(S, actType, pawn, toR, toC, category)
   end
 
   if actType == "attack" then
+    local cell = S.board[toR] and S.board[toR][toC]
+    if cell and cell.pawn and cell.pawn.player ~= pawn.player then
+      local guardDir = getActionDir(cell.pawn.row, cell.pawn.col, pawn.row, pawn.col)
+      S.guardAnim = {
+        pawn = cell.pawn,
+        dir = guardDir,
+      }
+    end
     local dir = getActionDir(pawn.row, pawn.col, toR, toC)
     local choice = love.math.random(1, 3)
     local duration = 0.6
@@ -745,7 +754,7 @@ function Game.buildMenuButtons(S)
     S.deathAnim = nil
     S.deathPending = nil
     S.sheathAnim = nil
-    S.movePending = nil
+    S.guardAnim = nil
     S.state.mode = "game"
     saveGameState(S)
   end
@@ -852,13 +861,9 @@ function Game.update(S, dt)
     S.sheathAnim.t = S.sheathAnim.t + dt
     if S.sheathAnim.t >= S.sheathAnim.duration then
       local mode = S.sheathAnim.mode
-      local pendingMove = S.movePending
       local pending = S.resolvePending
       S.sheathAnim = nil
-      if mode == "sheath" and pendingMove then
-        S.moveAnim = pendingMove
-        S.movePending = nil
-      elseif mode == "draw" and pending then
+      if mode == "draw" and pending then
         if isGameOver(S) then
           clearSavedGame()
           S.moveAnim = nil
@@ -871,7 +876,8 @@ function Game.update(S, dt)
           S.deathAnim = nil
           S.deathPending = nil
           S.sheathAnim = nil
-          S.movePending = nil
+          S.guardAnim = nil
+          S.moveAnim = nil
           S.resolvePending = nil
           S.state.mode = "menu"
           Game.buildMenuButtons(S)
