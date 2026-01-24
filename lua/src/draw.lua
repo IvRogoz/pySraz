@@ -745,13 +745,25 @@ local function drawFeedbackOverlay(S)
   love.graphics.setLineWidth(3)
   love.graphics.rectangle("line", x, y, rectW, rectH, 12, 12)
 
-  love.graphics.setFont(S.fonts.big)
-  if S.feedbackUI and S.feedbackUI.ok then
-    U.setColor255(0, 200, 0, 255)
-    love.graphics.printf("✓", 0, y + 40, w, "center")
+  local icon = (S.feedbackUI and S.feedbackUI.ok) and S.iconCheck or S.iconClose
+  if icon then
+    local iw, ih = icon:getDimensions()
+    local size = 240
+    local scale = size / math.max(iw, ih)
+    local cx = x + rectW / 2
+    local cy = y + rectH / 2
+    U.setColor255(255, 255, 255, 255)
+    love.graphics.draw(icon, cx, cy, 0, scale, scale, iw / 2, ih / 2)
   else
-    U.setColor255(200, 0, 0, 255)
-    love.graphics.printf("X", 0, y + 55, w, "center")
+    if S.feedbackUI and S.feedbackUI.ok then
+      U.setColor255(0, 200, 0, 255)
+      love.graphics.setFont(S.fonts.big)
+      love.graphics.printf("✓", 0, y + 40, w, "center")
+    else
+      U.setColor255(200, 0, 0, 255)
+      love.graphics.setFont(S.fonts.big)
+      love.graphics.printf("X", 0, y + 55, w, "center")
+    end
   end
 end
 

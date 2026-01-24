@@ -55,6 +55,8 @@ local S = {
   treeSheet = nil,
   treeColumns = nil,
   treeAnimFps = 6,
+  iconCheck = nil,
+  iconClose = nil,
 
 
   -- optional low-res background render target (used by your shader background, if draw.lua uses it)
@@ -141,6 +143,8 @@ function love.load()
       )
     end
   end
+  S.iconCheck = Assets.tryLoadImage("assets/check_128dp.png")
+  S.iconClose = Assets.tryLoadImage("assets/close_128dp.png")
 
 
   -- Audio FFT + music volume
