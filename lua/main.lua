@@ -14,6 +14,7 @@ local S = {
     timeLimit    = 30,
     boardSize    = 8,
     musicVolume  = 0.5, -- default 50%
+    includeTrees = true,
   },
 
   fonts = {},

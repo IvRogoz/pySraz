@@ -515,7 +515,7 @@ local function initBoard(S, boardSize)
     end
   end
 
-  if S.treeSheet and S.treeColumns and #S.treeColumns > 0 then
+  if S.cfg.includeTrees and S.treeSheet and S.treeColumns and #S.treeColumns > 0 then
     local treeChoices = {}
     for r = 1, boardSize do
       for c = 1, boardSize do
@@ -796,6 +796,10 @@ function Game.buildMenuButtons(S)
     S.cfg.boardSize = U.clamp(S.cfg.boardSize + delta, 6, 32)
   end
 
+  local function setTreesEnabled(enabled)
+    S.cfg.includeTrees = enabled
+  end
+
   -- NEW: volume clamp (0..1), step is 0.05 = 5%
   local function clampVolume(delta)
     S.cfg.musicVolume = U.clamp((S.cfg.musicVolume or 0.5) + delta, 0, 1)
@@ -851,16 +855,20 @@ function Game.buildMenuButtons(S)
     Button.new(-170,   10, 60, 60, "-", buttonFill, buttonHover, function() clampBoard(-1) end),
     Button.new( 170,   10, 60, 60, "+", buttonFill, buttonHover, function() clampBoard( 1) end),
 
+    -- trees
+    Button.new(-170,  100, 60, 60, "-", buttonFill, buttonHover, function() setTreesEnabled(false) end),
+    Button.new( 170,  100, 60, 60, "+", buttonFill, buttonHover, function() setTreesEnabled(true) end),
+
     -- music volume
-    Button.new(-170,  100, 60, 60, "-", buttonFill, buttonHover, function() clampVolume(-0.05) end),
-    Button.new( 170,  100, 60, 60, "+", buttonFill, buttonHover, function() clampVolume( 0.05) end),
+    Button.new(-170,  190, 60, 60, "-", buttonFill, buttonHover, function() clampVolume(-0.05) end),
+    Button.new( 170,  190, 60, 60, "+", buttonFill, buttonHover, function() clampVolume( 0.05) end),
 
     -- play
-    Button.new( -190,  260, 180, 60, "PLAY", {50,50,200}, {100,149,237}, startGame),
+    Button.new( -190,  300, 180, 60, "PLAY", {50,50,200}, {100,149,237}, startGame),
   }
 
   if hasSavedGame() then
-    table.insert(S.menuButtons, Button.new( 10,  260, 180, 60, "LOAD GAME", {60,120,60}, {90,170,90}, loadGame))
+    table.insert(S.menuButtons, Button.new( 10,  300, 180, 60, "LOAD GAME", {60,120,60}, {90,170,90}, loadGame))
   end
 
 end

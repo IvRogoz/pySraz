@@ -329,7 +329,8 @@ local function drawMenu(S)
   local rowPlayers = cy - 170
   local rowTime = cy - 80
   local rowBoard = cy + 10
-  local rowVolume = cy + 100
+  local rowTrees = cy + 100
+  local rowVolume = cy + 190
 
   love.graphics.setFont(labelFont)
   U.setColor255(255, 255, 255, 255)
@@ -346,6 +347,12 @@ local function drawMenu(S)
   love.graphics.printf(("Board Size (%dx%d):"):format(S.cfg.boardSize, S.cfg.boardSize), 0, rowBoard + labelOffset, w, "center")
   love.graphics.setFont(valueFont)
   love.graphics.printf(tostring(S.cfg.boardSize), 0, rowBoard + valueOffset, w, "center")
+
+  love.graphics.setFont(labelFont)
+  love.graphics.printf("Trees:", 0, rowTrees + labelOffset, w, "center")
+  love.graphics.setFont(valueFont)
+  local treeLabel = (S.cfg.includeTrees and "ON") or "OFF"
+  love.graphics.printf(treeLabel, 0, rowTrees + valueOffset, w, "center")
 
   love.graphics.setFont(labelFont)
   love.graphics.printf("Music Volume:", 0, rowVolume + labelOffset, w, "center")
