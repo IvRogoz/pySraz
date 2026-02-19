@@ -6,12 +6,7 @@ local Q = {}
 function Q.loadQuestionsCSV(filename)
   local questionsByCategory = {}
 
-  if not love.filesystem.getInfo(filename) then
-    print("Warning: missing " .. filename)
-    return questionsByCategory
-  end
-
-  for line in love.filesystem.lines(filename) do
+  local function addLine(line)
     if line and #line > 0 then
       local row = U.csvSplitLine(line)
       if #row >= 6 then
@@ -27,6 +22,37 @@ function Q.loadQuestionsCSV(filename)
     end
   end
 
+  if love.filesystem.getInfo(filename) then
+    for line in love.filesystem.lines(filename) do
+      addLine(line)
+    end
+    return questionsByCategory
+  end
+
+  local file = io.open(filename, "r")
+  if file then
+    for line in file:lines() do
+      addLine(line)
+    end
+    file:close()
+    return questionsByCategory
+  end
+
+  local base = love.filesystem.getSourceBaseDirectory and love.filesystem.getSourceBaseDirectory() or nil
+  if base and base ~= "" then
+    local path = base .. "/" .. filename
+    file = io.open(path, "r")
+    if file then
+      for line in file:lines() do
+        addLine(line)
+      end
+      file:close()
+      return questionsByCategory
+    end
+  end
+
+  print("Warning: missing " .. filename)
+  
   return questionsByCategory
 end
 
