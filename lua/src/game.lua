@@ -4,8 +4,13 @@ local U         = require("src.util")
 local Button    = require("src.button")
 local Assets    = require("src.assets")
 local Questions = require("src.questions")
+local Localization = require("src.localization")
 
 local Game = {}
+
+local function t(S, key, vars)
+  return Localization.t(S, key, vars)
+end
 
 local SAVE_PATH = "savegame.json"
 
@@ -177,7 +182,7 @@ local function buildPlayersAndPawns(S, numPlayers, boardSize)
 
   for i = 1, numPlayers do
     local p = {
-      name = "Player " .. i,
+      name = t(S, "player_name", {index = i}),
       index = i,
       color = Config.PLAYER_COLORS[i],
 
@@ -323,7 +328,10 @@ local function loadSavedGame(S)
     return false
   end
 
+  local preferredLanguage = S.language or S.cfg.language
   S.cfg = decoded.cfg or S.cfg
+  S.cfg.language = preferredLanguage or S.cfg.language
+  Localization.setLanguage(S, S.cfg.language)
   S.players = {}
   S.pawns = {}
   S.board = {}
@@ -800,13 +808,37 @@ function Game.buildMenuButtons(S)
     S.cfg.includeTrees = enabled
   end
 
-  -- NEW: volume clamp (0..1), step is 0.05 = 5%
+  local function cycleLanguage(delta)
+    local languages = Localization.getLanguageCodes(S)
+    if #languages == 0 then
+      return
+    end
+
+    local current = S.language or S.cfg.language or languages[1]
+    local index = 1
+    for i, code in ipairs(languages) do
+      if code == current then
+        index = i
+        break
+      end
+    end
+
+    index = index + delta
+    if index < 1 then
+      index = #languages
+    elseif index > #languages then
+      index = 1
+    end
+
+    Localization.setLanguage(S, languages[index])
+    Game.buildMenuButtons(S)
+  end
+
   local function clampVolume(delta)
     S.cfg.musicVolume = U.clamp((S.cfg.musicVolume or 0.5) + delta, 0, 1)
     if S.audioFFT and S.audioFFT.setVolume then
       S.audioFFT:setVolume(S.cfg.musicVolume)
     elseif S.audioFFT and S.audioFFT.source and S.audioFFT.source.setVolume then
-      -- fallback if you didn't add setVolume() yet
       S.audioFFT.source:setVolume(S.cfg.musicVolume)
     end
   end
@@ -844,31 +876,35 @@ function Game.buildMenuButtons(S)
 
   S.menuButtons = {
     -- players
-    Button.new(-170, -170, 60, 60, "-", buttonFill, buttonHover, function() clampPlayers(-1) end),
-    Button.new( 170, -170, 60, 60, "+", buttonFill, buttonHover, function() clampPlayers( 1) end),
+    Button.new(-170, -190, 60, 60, "-", buttonFill, buttonHover, function() clampPlayers(-1) end),
+    Button.new( 170, -190, 60, 60, "+", buttonFill, buttonHover, function() clampPlayers( 1) end),
 
     -- time
-    Button.new(-170,  -80, 60, 60, "-", buttonFill, buttonHover, function() clampTime(-5) end),
-    Button.new( 170,  -80, 60, 60, "+", buttonFill, buttonHover, function() clampTime( 5) end),
+    Button.new(-170, -115, 60, 60, "-", buttonFill, buttonHover, function() clampTime(-5) end),
+    Button.new( 170, -115, 60, 60, "+", buttonFill, buttonHover, function() clampTime( 5) end),
 
     -- board size
-    Button.new(-170,   10, 60, 60, "-", buttonFill, buttonHover, function() clampBoard(-1) end),
-    Button.new( 170,   10, 60, 60, "+", buttonFill, buttonHover, function() clampBoard( 1) end),
+    Button.new(-170,  -40, 60, 60, "-", buttonFill, buttonHover, function() clampBoard(-1) end),
+    Button.new( 170,  -40, 60, 60, "+", buttonFill, buttonHover, function() clampBoard( 1) end),
 
     -- trees
-    Button.new(-170,  100, 60, 60, "-", buttonFill, buttonHover, function() setTreesEnabled(false) end),
-    Button.new( 170,  100, 60, 60, "+", buttonFill, buttonHover, function() setTreesEnabled(true) end),
+    Button.new(-170,   35, 60, 60, "-", buttonFill, buttonHover, function() setTreesEnabled(false) end),
+    Button.new( 170,   35, 60, 60, "+", buttonFill, buttonHover, function() setTreesEnabled(true) end),
 
     -- music volume
-    Button.new(-170,  190, 60, 60, "-", buttonFill, buttonHover, function() clampVolume(-0.05) end),
-    Button.new( 170,  190, 60, 60, "+", buttonFill, buttonHover, function() clampVolume( 0.05) end),
+    Button.new(-170,  110, 60, 60, "-", buttonFill, buttonHover, function() clampVolume(-0.05) end),
+    Button.new( 170,  110, 60, 60, "+", buttonFill, buttonHover, function() clampVolume( 0.05) end),
+
+    -- language
+    Button.new(-170,  185, 60, 60, "<", buttonFill, buttonHover, function() cycleLanguage(-1) end),
+    Button.new( 170,  185, 60, 60, ">", buttonFill, buttonHover, function() cycleLanguage( 1) end),
 
     -- play
-    Button.new( -190,  300, 180, 60, "PLAY", {50,50,200}, {100,149,237}, startGame),
+    Button.new( -190,  290, 180, 60, t(S, "button_play"), {50,50,200}, {100,149,237}, startGame),
   }
 
   if hasSavedGame() then
-    table.insert(S.menuButtons, Button.new( 10,  300, 180, 60, "LOAD GAME", {60,120,60}, {90,170,90}, loadGame))
+    table.insert(S.menuButtons, Button.new( 10,  290, 180, 60, t(S, "button_load_game"), {60,120,60}, {90,170,90}, loadGame))
   end
 
 end

@@ -6,6 +6,7 @@ local Assets    = require("src.assets")
 local Questions = require("src.questions")
 local Game      = require("src.game")
 local Draw      = require("src.draw")
+local Localization = require("src.localization")
 
 local S = {
   state = { mode = "splash" }, -- splash | menu | game
@@ -15,11 +16,14 @@ local S = {
     boardSize    = 8,
     musicVolume  = 0.5, -- default 50%
     includeTrees = true,
+    language     = "en",
   },
 
   fonts = {},
   bgShader = nil,
   audioFFT = nil,
+  i18n = nil,
+  language = "en",
 
   -- runtime/game state
   questionsByCategory = {},
@@ -108,6 +112,8 @@ function love.load()
 
   -- Questions (KEEP your original working loader name)
   S.questionsByCategory = Questions.loadQuestionsCSV("questions.csv")
+  S.i18n = Localization.loadCSV("localization.csv")
+  Localization.setLanguage(S, S.cfg.language)
 
   -- Base pawn/flag images (fallback / menu previews)
   S.pawnBaseImg = Assets.tryLoadImage("pawn.png")

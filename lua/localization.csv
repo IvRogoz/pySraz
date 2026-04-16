@@ -1,0 +1,30 @@
+key,en,hr
+language_name,English,Hrvatski
+title_main_menu,MAIN MENU,GLAVNI IZBORNIK
+label_num_players,Number of Players:,Broj igraca:
+label_time_limit,Time (sec):,Vrijeme (sek):
+label_board_size,Board Size ({size}x{size}):,Velicina ploce ({size}x{size}):
+label_trees,Trees:,Drvece:
+value_on,ON,UKLJ
+value_off,OFF,ISKLJ
+label_music_volume,Music Volume:,Glasnoca glazbe:
+label_language,Language:,Jezik:
+button_play,PLAY,IGRAJ
+button_load_game,LOAD GAME,UCITAJ IGRU
+splash_title,SRAZ 2025,SRAZ 2025
+splash_subtitle,Capture the Flag,Zauzmi zastavu
+splash_click_to_start,Click anywhere to start,Klikni bilo gdje za pocetak
+hud_current_turn,Current Turn,Trenutni potez
+hud_score,Score: {score},Bodovi: {score}
+legend_title,Legend,Legenda
+legend_selected,Selected,Odabrano
+legend_move_empty,Move Empty,Pomak
+legend_attack,Attack,Napad
+legend_hole,Hole,Rupa
+category_Sport,Sport,Sport
+category_History,History,Povijest
+category_Music,Music,Glazba
+category_Science,Science,Znanost
+category_Art,Art,Umjetnost
+category_Random,Random,Nasumicno
+player_name,Player {index},Igrac {index}

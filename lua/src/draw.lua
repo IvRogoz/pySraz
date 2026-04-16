@@ -2,8 +2,13 @@
 local Config = require("src.config")
 local U      = require("src.util")
 local Game   = require("src.game")
+local Localization = require("src.localization")
 
 local Draw = {}
+
+local function t(S, key, vars)
+  return Localization.t(S, key, vars)
+end
 
 local function drawDim(alpha255)
   local w, h = love.graphics.getDimensions()
@@ -149,7 +154,7 @@ local function drawLegend(S, x, y)
 
   love.graphics.setFont(S.fonts.small)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.print("Legend", x + 70, y)
+  love.graphics.print(t(S, "legend_title"), x + 70, y)
   local yy = y + 35
 
   local keys = {}
@@ -162,16 +167,16 @@ local function drawLegend(S, x, y)
     love.graphics.rectangle("fill", x, yy, 20, 20)
     U.setColor255(255, 255, 255, 255)
     love.graphics.rectangle("line", x, yy, 20, 20)
-    love.graphics.print(cat, x + 30, yy)
+    love.graphics.print(t(S, "category_" .. cat), x + 30, yy)
     yy = yy + 25
   end
 
   yy = yy + 20
   local labels = {
-    {"Selected", {255, 255, 0}},
-    {"Move Empty", {150, 255, 150}},
-    {"Attack", {255, 150, 150}},
-    {"Hole", {255, 255, 255}},
+    {t(S, "legend_selected"), {255, 255, 0}},
+    {t(S, "legend_move_empty"), {150, 255, 150}},
+    {t(S, "legend_attack"), {255, 150, 150}},
+    {t(S, "legend_hole"), {255, 255, 255}},
   }
   for _, it in ipairs(labels) do
     local lab, col = it[1], it[2]
@@ -193,7 +198,7 @@ local function drawCurrentPlayerPanel(S, x, y)
 
   U.setColor255(255, 255, 255, 255)
   love.graphics.setFont(S.fonts.small)
-  love.graphics.print("Current Turn", x + 60, y)
+  love.graphics.print(t(S, "hud_current_turn"), x + 60, y)
 
   local frameIndex = getPawnIdleFrame(S.pawnAnim, love.timer.getTime())
   local previewPawn = {
@@ -215,7 +220,7 @@ local function drawCurrentPlayerPanel(S, x, y)
 
   love.graphics.setFont(S.fonts.small)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("Score: " .. p.score, x, y + 285, 200, "center")
+  love.graphics.printf(t(S, "hud_score", {score = p.score}), x, y + 285, 200, "center")
 
 end
 
@@ -229,7 +234,7 @@ local function drawHUD(S)
   local yy = 18
   for _, p in ipairs(S.players) do
     U.setColor255(p.color[1], p.color[2], p.color[3], 255)
-    love.graphics.print(("%s (Score: %d)"):format(p.name, p.score), 20, yy)
+    love.graphics.print(("%s (%s)"):format(p.name, t(S, "hud_score", {score = p.score})), 20, yy)
     yy = yy + 28
   end
 
@@ -282,15 +287,15 @@ local function drawSplash(S)
 
   love.graphics.setFont(S.fonts.title)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("SRAZ 2025", 0, h * 0.5 - 90, w, "center")
+  love.graphics.printf(t(S, "splash_title"), 0, h * 0.5 - 90, w, "center")
 
   love.graphics.setFont(S.fonts.medium)
   U.setColor255(200, 200, 200, 255)
-  love.graphics.printf("Capture the Flag", 0, h * 0.5 - 10, w, "center")
+  love.graphics.printf(t(S, "splash_subtitle"), 0, h * 0.5 - 10, w, "center")
 
   love.graphics.setFont(S.fonts.small)
   U.setColor255(255, 215, 0, 255)
-  love.graphics.printf("Click anywhere to start", 0, h * 0.5 + 50, w, "center")
+  love.graphics.printf(t(S, "splash_click_to_start"), 0, h * 0.5 + 50, w, "center")
 
   if (not S.splashVideo) and S.splashVideoError then
     U.setColor255(255, 120, 120, 255)
@@ -319,46 +324,52 @@ local function drawMenu(S)
 
   love.graphics.setFont(S.fonts.title)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("MAIN MENU", 0, cy - 350 + glitchy, w, "center")
+  love.graphics.printf(t(S, "title_main_menu"), 0, cy - 350 + glitchy, w, "center")
 
   local labelFont = S.fonts.small
   local valueFont = S.fonts.medium
   local labelOffset = -20
   local valueOffset = 10
 
-  local rowPlayers = cy - 170
-  local rowTime = cy - 80
-  local rowBoard = cy + 10
-  local rowTrees = cy + 100
-  local rowVolume = cy + 190
+  local rowPlayers = cy - 190
+  local rowTime = cy - 115
+  local rowBoard = cy - 40
+  local rowTrees = cy + 35
+  local rowVolume = cy + 110
+  local rowLanguage = cy + 185
 
   love.graphics.setFont(labelFont)
   U.setColor255(255, 255, 255, 255)
-  love.graphics.printf("Number of Players:", 0, rowPlayers + labelOffset, w, "center")
+  love.graphics.printf(t(S, "label_num_players"), 0, rowPlayers + labelOffset, w, "center")
   love.graphics.setFont(valueFont)
   love.graphics.printf(tostring(S.cfg.numPlayers), 0, rowPlayers + valueOffset, w, "center")
 
   love.graphics.setFont(labelFont)
-  love.graphics.printf("Time (sec):", 0, rowTime + labelOffset, w, "center")
+  love.graphics.printf(t(S, "label_time_limit"), 0, rowTime + labelOffset, w, "center")
   love.graphics.setFont(valueFont)
   love.graphics.printf(tostring(S.cfg.timeLimit), 0, rowTime + valueOffset, w, "center")
 
   love.graphics.setFont(labelFont)
-  love.graphics.printf(("Board Size (%dx%d):"):format(S.cfg.boardSize, S.cfg.boardSize), 0, rowBoard + labelOffset, w, "center")
+  love.graphics.printf(t(S, "label_board_size", {size = S.cfg.boardSize}), 0, rowBoard + labelOffset, w, "center")
   love.graphics.setFont(valueFont)
   love.graphics.printf(tostring(S.cfg.boardSize), 0, rowBoard + valueOffset, w, "center")
 
   love.graphics.setFont(labelFont)
-  love.graphics.printf("Trees:", 0, rowTrees + labelOffset, w, "center")
+  love.graphics.printf(t(S, "label_trees"), 0, rowTrees + labelOffset, w, "center")
   love.graphics.setFont(valueFont)
-  local treeLabel = (S.cfg.includeTrees and "ON") or "OFF"
+  local treeLabel = S.cfg.includeTrees and t(S, "value_on") or t(S, "value_off")
   love.graphics.printf(treeLabel, 0, rowTrees + valueOffset, w, "center")
 
   love.graphics.setFont(labelFont)
-  love.graphics.printf("Music Volume:", 0, rowVolume + labelOffset, w, "center")
+  love.graphics.printf(t(S, "label_music_volume"), 0, rowVolume + labelOffset, w, "center")
   love.graphics.setFont(valueFont)
   local volPct = math.floor((S.cfg.musicVolume or 0.5) * 100 + 0.5)
   love.graphics.printf(tostring(volPct) .. "%", 0, rowVolume + valueOffset, w, "center")
+
+  love.graphics.setFont(labelFont)
+  love.graphics.printf(t(S, "label_language"), 0, rowLanguage + labelOffset, w, "center")
+  love.graphics.setFont(valueFont)
+  love.graphics.printf(Localization.getLanguageName(S, S.language or S.cfg.language or "en"), 0, rowLanguage + valueOffset, w, "center")
 
 
 

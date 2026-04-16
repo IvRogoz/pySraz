@@ -72,6 +72,7 @@ Attack flow is: attack animation -> question(s) -> feedback -> death (if any) ->
 - Board size
 - Trees on/off
 - Music volume
+- Language selection
 - Play / Load Game
 
 ## Saving & Loading
@@ -94,13 +95,29 @@ Example:
 Sport,"Which country won the 2022 FIFA World Cup?","Argentina","France","Brazil","Germany"
 ```
 
+## Localization CSV
+
+`lua/localization.csv` is loaded at runtime and can be edited to add more languages.
+
+- The first column is the translation key.
+- Each additional column is a language code such as `en`, `hr`, or `de`.
+- To add a language, add a new column and provide translated text for the existing keys.
+
+Example:
+
+```
+key,en,hr,de
+button_play,PLAY,IGRAJ,SPIELEN
+label_language,Language:,Jezik:,Sprache:
+```
+
 ## Build (Windows)
 
-1) Create a `.love` file (exclude `questions.csv` if you want it external):
+1) Create a `.love` file (exclude `questions.csv` and `localization.csv` if you want them external):
 
 ```
 cd lua
-tar -a -c -f sraz.love --exclude=questions.csv .
+tar -a -c -f sraz.love --exclude=questions.csv --exclude=localization.csv .
 ```
 
 2) Build the EXE by appending the `.love` to `love.exe`:
@@ -113,7 +130,7 @@ copy /b love.exe+sraz.love Sraz.exe
 
 - `SDL2.dll`, `OpenAL32.dll`, `love.dll`, `lua51.dll`, `mpg123.dll`
 
-4) Place `questions.csv` next to the EXE.
+4) Place `questions.csv` and `localization.csv` next to the EXE.
 
 ## Notes
 
