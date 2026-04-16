@@ -83,10 +83,18 @@ Attack flow is: attack animation -> question(s) -> feedback -> death (if any) ->
 
 ## Questions CSV
 
-`lua/questions.csv` must be available at runtime. Format per line:
+`lua/questions.csv` must be available at runtime.
+
+Legacy format per line:
 
 ```
 Category,Question,Correct,Wrong1,Wrong2,Wrong3
+```
+
+Localized format per line:
+
+```
+Language,Category,Question,Correct,Wrong1,Wrong2,Wrong3
 ```
 
 Example:
@@ -94,6 +102,17 @@ Example:
 ```
 Sport,"Which country won the 2022 FIFA World Cup?","Argentina","France","Brazil","Germany"
 ```
+
+Localized example:
+
+```
+en,Sport,"Which country won the 2022 FIFA World Cup?","Argentina","France","Brazil","Germany"
+hr,Sport,"Koja je drzava osvojila Svjetsko prvenstvo 2022?","Argentina","Francuska","Brazil","Njemacka"
+```
+
+When a language column is present, the selected menu language is used for trivia questions too. If a question for the active language is missing, the game falls back to English.
+
+The bundled `lua/questions.csv` now ships with both `en` and `hr` rows for the included question set.
 
 ## Localization CSV
 

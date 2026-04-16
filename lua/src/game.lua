@@ -578,7 +578,7 @@ local function startFeedback(S, ok, onDone)
 end
 
 local function beginQuestion(S, category, timeLimit, requiredCorrect, onFinish)
-  local qdata = Questions.getRandomQuestionFrom(S.questionsByCategory, category)
+  local qdata = Questions.getRandomQuestionFrom(S.questionsByCategory, category, S.language or S.cfg.language)
   if not qdata then
     onFinish(true)
     return

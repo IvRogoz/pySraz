@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.1 - 2026-04-16
+
+- Linked trivia question selection to the active menu language.
+- Added Croatian translations for the bundled `lua/questions.csv` set alongside the existing English questions.
+- Kept backward compatibility with the legacy 6-column question CSV format.
+
 ## v0.2.0 - 2026-04-16
 
 - Added CSV-driven localization for the Lua/LÖVE game.
