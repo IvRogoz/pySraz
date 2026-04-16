@@ -1,19 +1,19 @@
 key,en,hr
 language_name,English,Hrvatski
 title_main_menu,MAIN MENU,GLAVNI IZBORNIK
-label_num_players,Number of Players:,Broj igraca:
+label_num_players,Number of Players:,Broj igrača:
 label_time_limit,Time (sec):,Vrijeme (sek):
-label_board_size,Board Size ({size}x{size}):,Velicina ploce ({size}x{size}):
-label_trees,Trees:,Drvece:
+label_board_size,Board Size ({size}x{size}):,Veličina ploče ({size}x{size}):
+label_trees,Trees:,Drveće:
 value_on,ON,UKLJ
 value_off,OFF,ISKLJ
-label_music_volume,Music Volume:,Glasnoca glazbe:
+label_music_volume,Music Volume:,Glasnoća glazbe:
 label_language,Language:,Jezik:
 button_play,PLAY,IGRAJ
-button_load_game,LOAD GAME,UCITAJ IGRU
+button_load_game,LOAD GAME,UČITAJ IGRU
 splash_title,SRAZ 2025,SRAZ 2025
 splash_subtitle,Capture the Flag,Zauzmi zastavu
-splash_click_to_start,Click anywhere to start,Klikni bilo gdje za pocetak
+splash_click_to_start,Click anywhere to start,Klikni bilo gdje za početak
 hud_current_turn,Current Turn,Trenutni potez
 hud_score,Score: {score},Bodovi: {score}
 legend_title,Legend,Legenda
@@ -26,5 +26,5 @@ category_History,History,Povijest
 category_Music,Music,Glazba
 category_Science,Science,Znanost
 category_Art,Art,Umjetnost
-category_Random,Random,Nasumicno
-player_name,Player {index},Igrac {index}
+category_Random,Random,Nasumično
+player_name,Player {index},Igrač {index}

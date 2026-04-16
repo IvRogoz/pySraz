@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.2 - 2026-04-16
+
+- Corrected the bundled Croatian localization and trivia text to use proper UTF-8 Croatian characters.
+- Updated the shipped `lua/localization.csv` and `lua/questions.csv` files to use `č ć ž š đ` instead of ASCII fallbacks.
+
 ## v0.2.1 - 2026-04-16
 
 - Linked trivia question selection to the active menu language.

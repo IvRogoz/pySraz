@@ -107,7 +107,7 @@ Localized example:
 
 ```
 en,Sport,"Which country won the 2022 FIFA World Cup?","Argentina","France","Brazil","Germany"
-hr,Sport,"Koja je drzava osvojila Svjetsko prvenstvo 2022?","Argentina","Francuska","Brazil","Njemacka"
+hr,Sport,"Koja je država osvojila Svjetsko prvenstvo 2022?","Argentina","Francuska","Brazil","Njemačka"
 ```
 
 When a language column is present, the selected menu language is used for trivia questions too. If a question for the active language is missing, the game falls back to English.
@@ -129,6 +129,8 @@ key,en,hr,de
 button_play,PLAY,IGRAJ,SPIELEN
 label_language,Language:,Jezik:,Sprache:
 ```
+
+Croatian entries in the bundled CSV files are stored as UTF-8 and use proper Croatian characters such as `č`, `ć`, `ž`, `š`, and `đ`.
 
 ## Build (Windows)
 
