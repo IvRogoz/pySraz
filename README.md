@@ -140,7 +140,7 @@ Croatian entries in the bundled CSV files are stored as UTF-8 and use proper Cro
 
 ```
 cd lua
-tar -a -c -f sraz.love --exclude=questions.csv --exclude=localization.csv .
+powershell -Command "Compress-Archive -Path (Get-ChildItem -Recurse -File | Where-Object { $_.FullName -notmatch '\\dist\\' -and $_.Name -notin @('questions.csv','localization.csv','savegame.json','save_debug.txt','sraz.love','sraz.7z') } | ForEach-Object { $_.FullName.Substring((Get-Location).Path.Length + 1) }) -DestinationPath sraz.zip -Force; Move-Item sraz.zip sraz.love -Force"
 ```
 
 2) Build the EXE by appending the `.love` to `love.exe`:
