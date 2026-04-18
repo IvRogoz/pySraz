@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.3 - 2026-04-18
+
+- Fixed the Windows release package to include the missing Visual C++ runtime DLLs.
+- Updated the Windows build instructions to list `msvcp120.dll` and `msvcr120.dll` as required runtime files.
+
 ## v0.2.2 - 2026-04-16
 
 - Corrected the bundled Croatian localization and trivia text to use proper UTF-8 Croatian characters.

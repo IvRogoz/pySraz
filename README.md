@@ -149,7 +149,7 @@ copy /b love.exe+sraz.love Sraz.exe
 
 3) Ship `Sraz.exe` alongside these DLLs from the LÖVE zip:
 
-- `SDL2.dll`, `OpenAL32.dll`, `love.dll`, `lua51.dll`, `mpg123.dll`
+- `SDL2.dll`, `OpenAL32.dll`, `love.dll`, `lua51.dll`, `mpg123.dll`, `msvcp120.dll`, `msvcr120.dll`
 
 4) Place `questions.csv` and `localization.csv` next to the EXE.
 
