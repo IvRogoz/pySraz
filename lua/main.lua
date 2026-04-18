@@ -9,7 +9,7 @@ local Draw      = require("src.draw")
 local Localization = require("src.localization")
 
 local S = {
-  state = { mode = "menu" }, -- splash | menu | game
+  state = { mode = "splash" }, -- splash | menu | game
   cfg = {
     numPlayers   = 2,
     timeLimit    = 30,

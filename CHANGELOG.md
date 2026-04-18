@@ -4,6 +4,7 @@
 
 - Fixed the Windows packaging process to build `.love` as a ZIP archive instead of a TAR archive.
 - Rebuilt the packaged EXE from a valid ZIP-based `.love` file so the released game actually starts correctly.
+- Restored the splash intro on startup.
 
 ## v0.2.4 - 2026-04-18
 
