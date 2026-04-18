@@ -25,6 +25,8 @@ love lua
 
 If you are running a packaged EXE, keep `questions.csv` next to the executable.
 
+The packaged Windows build opens directly to the main menu on launch.
+
 ## How To Play
 
 - Each turn, select one of your pawns and move one tile orthogonally.

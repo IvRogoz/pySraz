@@ -9,7 +9,7 @@ local Draw      = require("src.draw")
 local Localization = require("src.localization")
 
 local S = {
-  state = { mode = "splash" }, -- splash | menu | game
+  state = { mode = "menu" }, -- splash | menu | game
   cfg = {
     numPlayers   = 2,
     timeLimit    = 30,
@@ -100,6 +100,7 @@ end
 
 function love.load()
   love.window.setMode(Config.DEFAULT_W, Config.DEFAULT_H, { resizable = true, vsync = 0 })
+  love.window.setTitle("SRAZ 2026")
   love.graphics.setBackgroundColor(0, 0, 0, 1)
   love.math.setRandomSeed(os.time())
 

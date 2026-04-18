@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.4 - 2026-04-18
+
+- Changed the packaged game startup to open directly to the main menu instead of the splash screen.
+- Set the game window title to `SRAZ 2026` instead of the default LÖVE title.
+
 ## v0.2.3 - 2026-04-18
 
 - Fixed the Windows release package to include the missing Visual C++ runtime DLLs.
