@@ -1,0 +1,814 @@
+{
+  "ok": true,
+  "frames_root": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames",
+  "cell_width": 64,
+  "cell_height": 64,
+  "errors": [],
+  "warnings": [],
+  "rows": [
+    {
+      "state": "idle",
+      "row": 0,
+      "expected_frames": 6,
+      "actual_frames": 6,
+      "extraction_method": "components",
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "frames": [
+        {
+          "index": 0,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\00.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1717,
+          "bbox": [
+            11,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 1,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\01.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1705,
+          "bbox": [
+            12,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 1
+        },
+        {
+          "index": 2,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\02.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1731,
+          "bbox": [
+            11,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 3,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\03.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1683,
+          "bbox": [
+            12,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 4,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\04.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1749,
+          "bbox": [
+            11,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 5,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\05.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1686,
+          "bbox": [
+            12,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        }
+      ]
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "expected_frames": 6,
+      "actual_frames": 6,
+      "extraction_method": "components",
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "frames": [
+        {
+          "index": 0,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\00.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1692,
+          "bbox": [
+            11,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 1,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\01.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1648,
+          "bbox": [
+            11,
+            2,
+            53,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 2,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\02.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1712,
+          "bbox": [
+            8,
+            2,
+            56,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 3,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\03.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1794,
+          "bbox": [
+            2,
+            2,
+            61,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 4,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\04.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1657,
+          "bbox": [
+            10,
+            2,
+            53,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 5,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\05.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1732,
+          "bbox": [
+            11,
+            2,
+            53,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        }
+      ]
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "expected_frames": 4,
+      "actual_frames": 4,
+      "extraction_method": "components",
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "frames": [
+        {
+          "index": 0,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\guard\\00.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1547,
+          "bbox": [
+            13,
+            2,
+            50,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 1,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\guard\\01.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1580,
+          "bbox": [
+            13,
+            2,
+            50,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 2,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\guard\\02.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1622,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 3,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\guard\\03.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1609,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        }
+      ]
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "expected_frames": 8,
+      "actual_frames": 8,
+      "extraction_method": "components",
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "frames": [
+        {
+          "index": 0,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\00.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1574,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 1,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\01.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1572,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 2,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\02.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1516,
+          "bbox": [
+            14,
+            2,
+            49,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 3,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\03.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1587,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 4,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\04.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1671,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 5,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\05.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1605,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 6,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\06.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1665,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 7,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\07.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1680,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        }
+      ]
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "expected_frames": 8,
+      "actual_frames": 8,
+      "extraction_method": "components",
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "frames": [
+        {
+          "index": 0,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\00.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1509,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 1,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\01.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1469,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 2,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\02.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1548,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 3,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\03.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1461,
+          "bbox": [
+            13,
+            2,
+            50,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 4,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\04.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1576,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 5,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\05.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1504,
+          "bbox": [
+            13,
+            2,
+            50,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 6,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\06.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1442,
+          "bbox": [
+            14,
+            2,
+            50,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 7,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\07.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1454,
+          "bbox": [
+            13,
+            2,
+            50,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        }
+      ]
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "expected_frames": 8,
+      "actual_frames": 8,
+      "extraction_method": "components",
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "frames": [
+        {
+          "index": 0,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\00.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1578,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 1,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\01.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1522,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 1
+        },
+        {
+          "index": 2,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\02.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1541,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 3,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\03.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1564,
+          "bbox": [
+            13,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 4,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\04.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1698,
+          "bbox": [
+            12,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 5,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\05.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1635,
+          "bbox": [
+            12,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 6,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\06.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1633,
+          "bbox": [
+            12,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 7,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\07.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1669,
+          "bbox": [
+            12,
+            2,
+            52,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        }
+      ]
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "expected_frames": 8,
+      "actual_frames": 8,
+      "extraction_method": "components",
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "frames": [
+        {
+          "index": 0,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\00.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1646,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 1,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\01.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1657,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 2,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\02.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1655,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 3,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\03.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1651,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 4,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\04.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1676,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 5,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\05.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1642,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 6,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\06.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1647,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        },
+        {
+          "index": 7,
+          "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\07.png",
+          "width": 64,
+          "height": 64,
+          "nontransparent_pixels": 1648,
+          "bbox": [
+            12,
+            2,
+            51,
+            62
+          ],
+          "edge_pixels": 0,
+          "chroma_adjacent_pixels": 0
+        }
+      ]
+    }
+  ]
+}

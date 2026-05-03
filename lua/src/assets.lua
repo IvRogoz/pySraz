@@ -221,6 +221,54 @@ function Assets.loadPawnAnimations()
   }
 end
 
+function Assets.loadPawnSkinOptions(basePawnImg)
+  local options = {
+    {
+      id = "animated",
+      label = "Current",
+      type = "animated",
+    },
+  }
+
+  if basePawnImg then
+    table.insert(options, {
+      id = "pawn.png",
+      label = "pawn.png",
+      type = "image",
+      image = basePawnImg,
+    })
+  end
+
+  local dir = "pawn_skins"
+  if love.filesystem.getSourceBaseDirectory and love.filesystem.mount then
+    local baseDir = love.filesystem.getSourceBaseDirectory()
+    if baseDir and baseDir ~= "" then
+      pcall(love.filesystem.mount, baseDir .. "/" .. dir, dir, true)
+    end
+  end
+
+  if love.filesystem.getInfo(dir, "directory") then
+    local names = love.filesystem.getDirectoryItems(dir)
+    table.sort(names)
+    for _, name in ipairs(names) do
+      if endsWith(name, ".png") then
+        local path = dir .. "/" .. name
+        local image = Assets.tryLoadImage(path)
+        if image then
+          table.insert(options, {
+            id = path,
+            label = name,
+            type = "image",
+            image = image,
+          })
+        end
+      end
+    end
+  end
+
+  return options
+end
+
 function Assets.loadDirectionalFrames(spriteDir, cropConfigPath, fps)
   if not love.filesystem.getInfo(spriteDir) then
     return nil

@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "character_id": "medieval-footman",
+  "display_name": "Medieval Footman",
+  "description": "A configurable 2D game character sprite: an original basic medieval footman matching the provided walk.png style reference: small chibi/isometric RPG sprite, kettle helmet or simple steel cap, chainmail, padded tunic, boots, round shield, short sword, compact readable silhouette, no logo or readable text; directional animations use isometric/angled views, with walk-up as back/top angled walking away and walk-down as front/top angled walking toward camera.",
+  "created_at": "2026-05-03T17:10:12.328709+00:00",
+  "atlas": {
+    "columns": 8,
+    "rows": 7,
+    "cell_width": 64,
+    "cell_height": 64,
+    "width": 512,
+    "height": 448
+  },
+  "animations": [
+    {
+      "name": "idle",
+      "row": 0,
+      "frames": 6,
+      "action": "idle stance loop in the same isometric RPG sprite style",
+      "fps": 12
+    },
+    {
+      "name": "attack",
+      "row": 1,
+      "frames": 6,
+      "action": "short sword attack loop in isometric RPG view",
+      "fps": 12
+    },
+    {
+      "name": "guard",
+      "row": 2,
+      "frames": 4,
+      "action": "shield raised guard stance loop in isometric RPG view",
+      "fps": 12
+    },
+    {
+      "name": "walk-left",
+      "row": 3,
+      "frames": 8,
+      "action": "isometric walking left cycle",
+      "fps": 12
+    },
+    {
+      "name": "walk-right",
+      "row": 4,
+      "frames": 8,
+      "action": "isometric walking right cycle",
+      "fps": 12
+    },
+    {
+      "name": "walk-up",
+      "row": 5,
+      "frames": 8,
+      "action": "isometric walking up and away cycle, back/top view",
+      "fps": 12
+    },
+    {
+      "name": "walk-down",
+      "row": 6,
+      "frames": 8,
+      "action": "isometric walking down and toward camera cycle, front/top view",
+      "fps": 12
+    }
+  ],
+  "layout_guides": [
+    {
+      "animation": "idle",
+      "path": "references\\layout-guides\\idle.png",
+      "width": 384,
+      "height": 64,
+      "frames": 6,
+      "cell_width": 64,
+      "cell_height": 64,
+      "safe_margin_x": 6,
+      "safe_margin_y": 6,
+      "usage": "layout guide input only; do not copy visible guide lines into generated sprite strips"
+    },
+    {
+      "animation": "attack",
+      "path": "references\\layout-guides\\attack.png",
+      "width": 384,
+      "height": 64,
+      "frames": 6,
+      "cell_width": 64,
+      "cell_height": 64,
+      "safe_margin_x": 6,
+      "safe_margin_y": 6,
+      "usage": "layout guide input only; do not copy visible guide lines into generated sprite strips"
+    },
+    {
+      "animation": "guard",
+      "path": "references\\layout-guides\\guard.png",
+      "width": 256,
+      "height": 64,
+      "frames": 4,
+      "cell_width": 64,
+      "cell_height": 64,
+      "safe_margin_x": 6,
+      "safe_margin_y": 6,
+      "usage": "layout guide input only; do not copy visible guide lines into generated sprite strips"
+    },
+    {
+      "animation": "walk-left",
+      "path": "references\\layout-guides\\walk-left.png",
+      "width": 512,
+      "height": 64,
+      "frames": 8,
+      "cell_width": 64,
+      "cell_height": 64,
+      "safe_margin_x": 6,
+      "safe_margin_y": 6,
+      "usage": "layout guide input only; do not copy visible guide lines into generated sprite strips"
+    },
+    {
+      "animation": "walk-right",
+      "path": "references\\layout-guides\\walk-right.png",
+      "width": 512,
+      "height": 64,
+      "frames": 8,
+      "cell_width": 64,
+      "cell_height": 64,
+      "safe_margin_x": 6,
+      "safe_margin_y": 6,
+      "usage": "layout guide input only; do not copy visible guide lines into generated sprite strips"
+    },
+    {
+      "animation": "walk-up",
+      "path": "references\\layout-guides\\walk-up.png",
+      "width": 512,
+      "height": 64,
+      "frames": 8,
+      "cell_width": 64,
+      "cell_height": 64,
+      "safe_margin_x": 6,
+      "safe_margin_y": 6,
+      "usage": "layout guide input only; do not copy visible guide lines into generated sprite strips"
+    },
+    {
+      "animation": "walk-down",
+      "path": "references\\layout-guides\\walk-down.png",
+      "width": 512,
+      "height": 64,
+      "frames": 8,
+      "cell_width": 64,
+      "cell_height": 64,
+      "safe_margin_x": 6,
+      "safe_margin_y": 6,
+      "usage": "layout guide input only; do not copy visible guide lines into generated sprite strips"
+    }
+  ],
+  "references": [
+    {
+      "path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\references\\reference-01.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "format": "PNG",
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\lua\\assets\\walk.png",
+      "copied_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\references\\reference-01.png"
+    }
+  ],
+  "chroma_key": {
+    "hex": "#FF00FF",
+    "rgb": [
+      255,
+      0,
+      255
+    ],
+    "name": "magenta",
+    "selection": "auto",
+    "score": 204.47
+  },
+  "character_notes": "an original basic medieval footman matching the provided walk.png style reference: small chibi/isometric RPG sprite, kettle helmet or simple steel cap, chainmail, padded tunic, boots, round shield, short sword, compact readable silhouette, no logo or readable text; directional animations use isometric/angled views, with walk-up as back/top angled walking away and walk-down as front/top angled walking toward camera",
+  "style_preset": "iso-rpg",
+  "style_notes": "",
+  "style_contract": "isometric RPG sprite style, three-quarter top view, compact readable proportions, crisp edges, limited palette, flat shading, no detailed background",
+  "view": "isometric RPG directional view like the provided walk.png reference",
+  "mirror_pairs": {
+    "walk-left": "walk-right"
+  },
+  "primary_generation_skill": "$imagegen",
+  "canonical_identity_reference": {
+    "path": "references\\canonical-base.png",
+    "source_job": "base",
+    "sha256": "9d911b8f6a8993c31420b49a6136bb27b7688b799a23c5cf3b9ea9a2cdc00510",
+    "metadata": {
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "format": "PNG"
+    }
+  }
+}

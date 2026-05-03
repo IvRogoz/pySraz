@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "run_dir": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric",
+  "spritesheet_png": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\final\\spritesheet.png",
+  "spritesheet_webp": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\final\\spritesheet.webp",
+  "validation": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\final\\validation.json",
+  "contact_sheet": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\qa\\contact-sheet.png",
+  "review": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\qa\\review.json",
+  "gifs": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\qa\\gifs",
+  "package": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\package"
+}

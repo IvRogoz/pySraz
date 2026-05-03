@@ -1,0 +1,408 @@
+{
+  "ok": true,
+  "file": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\final\\spritesheet.webp",
+  "format": "WEBP",
+  "mode": "RGBA",
+  "width": 512,
+  "height": 448,
+  "errors": [],
+  "warnings": [],
+  "chroma_key_leaks": {
+    "exact": 0,
+    "near": 0
+  },
+  "cells": [
+    {
+      "state": "idle",
+      "row": 0,
+      "column": 0,
+      "used": true,
+      "nontransparent_pixels": 1717
+    },
+    {
+      "state": "idle",
+      "row": 0,
+      "column": 1,
+      "used": true,
+      "nontransparent_pixels": 1705
+    },
+    {
+      "state": "idle",
+      "row": 0,
+      "column": 2,
+      "used": true,
+      "nontransparent_pixels": 1731
+    },
+    {
+      "state": "idle",
+      "row": 0,
+      "column": 3,
+      "used": true,
+      "nontransparent_pixels": 1683
+    },
+    {
+      "state": "idle",
+      "row": 0,
+      "column": 4,
+      "used": true,
+      "nontransparent_pixels": 1749
+    },
+    {
+      "state": "idle",
+      "row": 0,
+      "column": 5,
+      "used": true,
+      "nontransparent_pixels": 1686
+    },
+    {
+      "state": "idle",
+      "row": 0,
+      "column": 6,
+      "used": false,
+      "nontransparent_pixels": 0
+    },
+    {
+      "state": "idle",
+      "row": 0,
+      "column": 7,
+      "used": false,
+      "nontransparent_pixels": 0
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "column": 0,
+      "used": true,
+      "nontransparent_pixels": 1692
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "column": 1,
+      "used": true,
+      "nontransparent_pixels": 1648
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "column": 2,
+      "used": true,
+      "nontransparent_pixels": 1712
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "column": 3,
+      "used": true,
+      "nontransparent_pixels": 1794
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "column": 4,
+      "used": true,
+      "nontransparent_pixels": 1657
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "column": 5,
+      "used": true,
+      "nontransparent_pixels": 1732
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "column": 6,
+      "used": false,
+      "nontransparent_pixels": 0
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "column": 7,
+      "used": false,
+      "nontransparent_pixels": 0
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "column": 0,
+      "used": true,
+      "nontransparent_pixels": 1547
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "column": 1,
+      "used": true,
+      "nontransparent_pixels": 1580
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "column": 2,
+      "used": true,
+      "nontransparent_pixels": 1622
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "column": 3,
+      "used": true,
+      "nontransparent_pixels": 1609
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "column": 4,
+      "used": false,
+      "nontransparent_pixels": 0
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "column": 5,
+      "used": false,
+      "nontransparent_pixels": 0
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "column": 6,
+      "used": false,
+      "nontransparent_pixels": 0
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "column": 7,
+      "used": false,
+      "nontransparent_pixels": 0
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "column": 0,
+      "used": true,
+      "nontransparent_pixels": 1574
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "column": 1,
+      "used": true,
+      "nontransparent_pixels": 1572
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "column": 2,
+      "used": true,
+      "nontransparent_pixels": 1516
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "column": 3,
+      "used": true,
+      "nontransparent_pixels": 1587
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "column": 4,
+      "used": true,
+      "nontransparent_pixels": 1671
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "column": 5,
+      "used": true,
+      "nontransparent_pixels": 1605
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "column": 6,
+      "used": true,
+      "nontransparent_pixels": 1665
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "column": 7,
+      "used": true,
+      "nontransparent_pixels": 1680
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "column": 0,
+      "used": true,
+      "nontransparent_pixels": 1509
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "column": 1,
+      "used": true,
+      "nontransparent_pixels": 1469
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "column": 2,
+      "used": true,
+      "nontransparent_pixels": 1548
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "column": 3,
+      "used": true,
+      "nontransparent_pixels": 1461
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "column": 4,
+      "used": true,
+      "nontransparent_pixels": 1576
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "column": 5,
+      "used": true,
+      "nontransparent_pixels": 1504
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "column": 6,
+      "used": true,
+      "nontransparent_pixels": 1442
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "column": 7,
+      "used": true,
+      "nontransparent_pixels": 1454
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "column": 0,
+      "used": true,
+      "nontransparent_pixels": 1578
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "column": 1,
+      "used": true,
+      "nontransparent_pixels": 1522
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "column": 2,
+      "used": true,
+      "nontransparent_pixels": 1541
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "column": 3,
+      "used": true,
+      "nontransparent_pixels": 1564
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "column": 4,
+      "used": true,
+      "nontransparent_pixels": 1698
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "column": 5,
+      "used": true,
+      "nontransparent_pixels": 1635
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "column": 6,
+      "used": true,
+      "nontransparent_pixels": 1633
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "column": 7,
+      "used": true,
+      "nontransparent_pixels": 1669
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "column": 0,
+      "used": true,
+      "nontransparent_pixels": 1646
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "column": 1,
+      "used": true,
+      "nontransparent_pixels": 1657
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "column": 2,
+      "used": true,
+      "nontransparent_pixels": 1655
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "column": 3,
+      "used": true,
+      "nontransparent_pixels": 1651
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "column": 4,
+      "used": true,
+      "nontransparent_pixels": 1676
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "column": 5,
+      "used": true,
+      "nontransparent_pixels": 1642
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "column": 6,
+      "used": true,
+      "nontransparent_pixels": 1647
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "column": 7,
+      "used": true,
+      "nontransparent_pixels": 1648
+    }
+  ]
+}

@@ -14,6 +14,72 @@ end
 
 local SAVE_PATH = "savegame.json"
 
+local function getDefaultPlayerName(S, index)
+  return t(S, "player_name", {index = index})
+end
+
+local function isLocalizedDefaultPlayerName(S, index, name)
+  local i18n = S.i18n
+  local row = i18n and i18n.values and i18n.values.player_name or nil
+  if not row then
+    return name == ("Player " .. index)
+  end
+  for _, template in pairs(row) do
+    if template and template ~= "" then
+      local defaultName = template:gsub("{index}", tostring(index))
+      if name == defaultName then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+local function refreshDefaultPlayerNames(S)
+  S.cfg.playerNames = S.cfg.playerNames or {}
+  for i = 1, 4 do
+    if not S.cfg.playerNames[i] or S.cfg.playerNames[i] == "" or isLocalizedDefaultPlayerName(S, i, S.cfg.playerNames[i]) then
+      S.cfg.playerNames[i] = getDefaultPlayerName(S, i)
+    end
+  end
+end
+
+local function ensureMenuConfig(S)
+  S.cfg.playerNames = S.cfg.playerNames or {}
+  S.cfg.pawnSkins = S.cfg.pawnSkins or {}
+  for i = 1, 4 do
+    if not S.cfg.playerNames[i] or S.cfg.playerNames[i] == "" then
+      S.cfg.playerNames[i] = getDefaultPlayerName(S, i)
+    end
+    if not S.cfg.pawnSkins[i] or S.cfg.pawnSkins[i] == "" then
+      S.cfg.pawnSkins[i] = "animated"
+    end
+  end
+  S.selectedConfigPlayer = U.clamp(S.selectedConfigPlayer or 1, 1, S.cfg.numPlayers or 2)
+end
+
+local function getPawnSkinOption(S, skinId)
+  local options = S.pawnSkinOptions or {}
+  for _, option in ipairs(options) do
+    if option.id == skinId then
+      return option
+    end
+  end
+  return options[1]
+end
+
+local function applyPlayerSkin(S, player)
+  local skin = getPawnSkinOption(S, player.pawnSkinId)
+  player.pawnSkin = skin
+  if skin and skin.type == "image" and skin.image then
+    player.pawnCanvas = Assets.makeTintedCanvas(skin.image, player.color, 1.0)
+  elseif S.pawnBaseImg then
+    player.pawnCanvas = Assets.makeTintedCanvas(S.pawnBaseImg, player.color, 1.0)
+  else
+    player.pawnCanvas = Assets.makeFallbackPawnCanvas(player.color, false)
+  end
+end
+
 local function getWorkingSavePath()
   local cwd = love.filesystem.getWorkingDirectory and love.filesystem.getWorkingDirectory() or nil
   if not cwd or cwd == "" then
@@ -169,6 +235,7 @@ end
 local function buildPlayersAndPawns(S, numPlayers, boardSize)
   S.players = {}
   S.pawns = {}
+  ensureMenuConfig(S)
 
   local corners = {
     {1, 1},
@@ -182,23 +249,24 @@ local function buildPlayersAndPawns(S, numPlayers, boardSize)
 
   for i = 1, numPlayers do
     local p = {
-      name = t(S, "player_name", {index = i}),
+      name = S.cfg.playerNames[i] or getDefaultPlayerName(S, i),
       index = i,
       color = Config.PLAYER_COLORS[i],
 
       score = 0,
       pawnCanvas = nil,
       flagCanvas = nil,
+      pawnSkinId = S.cfg.pawnSkins[i] or "animated",
+      pawnSkin = nil,
       scaleBoost = (i == 1) and 1.3 or (i == 4) and 1.3 or 1.0,
 
     }
 
 
-    if S.pawnBaseImg and S.flagBaseImg then
-      p.pawnCanvas = Assets.makeTintedCanvas(S.pawnBaseImg, p.color, 1.0)
+    applyPlayerSkin(S, p)
+    if S.flagBaseImg then
       p.flagCanvas = Assets.makeTintedCanvas(S.flagBaseImg, p.color, 0.35)
     else
-      p.pawnCanvas = Assets.makeFallbackPawnCanvas(p.color, false)
       p.flagCanvas = Assets.makeFallbackPawnCanvas(p.color, true)
     end
 
@@ -251,6 +319,7 @@ local function saveGameState(S)
       color = player.color,
       score = player.score,
       scaleBoost = player.scaleBoost,
+      pawnSkinId = player.pawnSkinId,
     })
   end
 
@@ -344,16 +413,17 @@ local function loadSavedGame(S)
       score = playerData.score or 0,
       pawnCanvas = nil,
       flagCanvas = nil,
+      pawnSkinId = playerData.pawnSkinId or "animated",
+      pawnSkin = nil,
       scaleBoost = playerData.scaleBoost or 1.0,
     })
   end
 
   for _, player in ipairs(S.players) do
-    if S.pawnBaseImg and S.flagBaseImg then
-      player.pawnCanvas = Assets.makeTintedCanvas(S.pawnBaseImg, player.color, 1.0)
+    applyPlayerSkin(S, player)
+    if S.flagBaseImg then
       player.flagCanvas = Assets.makeTintedCanvas(S.flagBaseImg, player.color, 0.35)
     else
-      player.pawnCanvas = Assets.makeFallbackPawnCanvas(player.color, false)
       player.flagCanvas = Assets.makeFallbackPawnCanvas(player.color, true)
     end
   end
@@ -794,8 +864,11 @@ end
 -- Menu build
 -- -----------------------------
 function Game.buildMenuButtons(S)
+  ensureMenuConfig(S)
+
   local function clampPlayers(delta)
     S.cfg.numPlayers = U.clamp(S.cfg.numPlayers + delta, 2, 4)
+    ensureMenuConfig(S)
   end
   local function clampTime(delta)
     S.cfg.timeLimit = U.clamp(S.cfg.timeLimit + delta, 5, 120)
@@ -831,7 +904,41 @@ function Game.buildMenuButtons(S)
     end
 
     Localization.setLanguage(S, languages[index])
+    refreshDefaultPlayerNames(S)
     Game.buildMenuButtons(S)
+  end
+
+  local function cycleConfigPlayer(delta)
+    S.selectedConfigPlayer = (S.selectedConfigPlayer or 1) + delta
+    if S.selectedConfigPlayer < 1 then
+      S.selectedConfigPlayer = S.cfg.numPlayers
+    elseif S.selectedConfigPlayer > S.cfg.numPlayers then
+      S.selectedConfigPlayer = 1
+    end
+    S.editingPlayerIndex = nil
+  end
+
+  local function cyclePawnSkin(delta)
+    local options = S.pawnSkinOptions or {}
+    if #options == 0 then
+      return
+    end
+    local playerIndex = S.selectedConfigPlayer or 1
+    local current = S.cfg.pawnSkins[playerIndex] or "animated"
+    local index = 1
+    for i, option in ipairs(options) do
+      if option.id == current then
+        index = i
+        break
+      end
+    end
+    index = index + delta
+    if index < 1 then
+      index = #options
+    elseif index > #options then
+      index = 1
+    end
+    S.cfg.pawnSkins[playerIndex] = options[index].id
   end
 
   local function clampVolume(delta)
@@ -898,6 +1005,12 @@ function Game.buildMenuButtons(S)
     -- language
     Button.new(-170,  185, 60, 60, "<", buttonFill, buttonHover, function() cycleLanguage(-1) end),
     Button.new( 170,  185, 60, 60, ">", buttonFill, buttonHover, function() cycleLanguage( 1) end),
+
+    -- customization panel
+    Button.new( 235, -170, 48, 44, "<", buttonFill, buttonHover, function() cycleConfigPlayer(-1) end),
+    Button.new( 425, -170, 48, 44, ">", buttonFill, buttonHover, function() cycleConfigPlayer( 1) end),
+    Button.new( 235,   40, 48, 44, "<", buttonFill, buttonHover, function() cyclePawnSkin(-1) end),
+    Button.new( 425,   40, 48, 44, ">", buttonFill, buttonHover, function() cyclePawnSkin( 1) end),
 
     -- play
     Button.new( -190,  290, 180, 60, t(S, "button_play"), {50,50,200}, {100,149,237}, startGame),
@@ -1050,6 +1163,13 @@ function Game.mousepressed(S, x, y, button)
       for _, b in ipairs(S.menuButtons) do
         if b:mousepressed(x, y, button) then break end
       end
+      S.editingPlayerIndex = nil
+      for _, rect in ipairs(S.menuNameRects or {}) do
+        if U.pointInRect(x, y, rect.x, rect.y, rect.w, rect.h) then
+          S.editingPlayerIndex = rect.playerIndex
+          break
+        end
+      end
     end
     return
   end
@@ -1160,6 +1280,25 @@ function Game.mousepressed(S, x, y, button)
 end
 
 function Game.keypressed(S, key)
+  if S.state.mode == "menu" and S.editingPlayerIndex then
+    if key == "backspace" then
+      local name = S.cfg.playerNames[S.editingPlayerIndex] or ""
+      local byteoffset = utf8 and utf8.offset(name, -1) or nil
+      if byteoffset then
+        S.cfg.playerNames[S.editingPlayerIndex] = name:sub(1, byteoffset - 1)
+      else
+        S.cfg.playerNames[S.editingPlayerIndex] = name:sub(1, math.max(0, #name - 1))
+      end
+      return
+    elseif key == "return" or key == "kpenter" or key == "escape" then
+      if S.cfg.playerNames[S.editingPlayerIndex] == "" then
+        S.cfg.playerNames[S.editingPlayerIndex] = getDefaultPlayerName(S, S.editingPlayerIndex)
+      end
+      S.editingPlayerIndex = nil
+      return
+    end
+  end
+
   if key == "escape" then
     if S.questionUI then
       local finish = S.questionUI.onFinish
@@ -1174,6 +1313,17 @@ function Game.keypressed(S, key)
     end
 
   end
+end
+
+function Game.textinput(S, text)
+  if S.state.mode ~= "menu" or not S.editingPlayerIndex then
+    return
+  end
+  local current = S.cfg.playerNames[S.editingPlayerIndex] or ""
+  if #current >= 18 then
+    return
+  end
+  S.cfg.playerNames[S.editingPlayerIndex] = current .. text
 end
 
 -- Expose for Draw module: valid moves

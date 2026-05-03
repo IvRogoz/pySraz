@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "id": "medieval-footman",
+  "display_name": "Medieval Footman",
+  "description": "A configurable 2D game character sprite: an original basic medieval footman matching the provided walk.png style reference: small chibi/isometric RPG sprite, kettle helmet or simple steel cap, chainmail, padded tunic, boots, round shield, short sword, compact readable silhouette, no logo or readable text; directional animations use isometric/angled views, with walk-up as back/top angled walking away and walk-down as front/top angled walking toward camera.",
+  "spritesheet": "medieval-footman.webp",
+  "atlas": {
+    "columns": 8,
+    "rows": 7,
+    "cell_width": 64,
+    "cell_height": 64,
+    "width": 512,
+    "height": 448
+  },
+  "animations": [
+    {
+      "name": "idle",
+      "row": 0,
+      "frames": 6,
+      "action": "idle stance loop in the same isometric RPG sprite style",
+      "fps": 12
+    },
+    {
+      "name": "attack",
+      "row": 1,
+      "frames": 6,
+      "action": "short sword attack loop in isometric RPG view",
+      "fps": 12
+    },
+    {
+      "name": "guard",
+      "row": 2,
+      "frames": 4,
+      "action": "shield raised guard stance loop in isometric RPG view",
+      "fps": 12
+    },
+    {
+      "name": "walk-left",
+      "row": 3,
+      "frames": 8,
+      "action": "isometric walking left cycle",
+      "fps": 12
+    },
+    {
+      "name": "walk-right",
+      "row": 4,
+      "frames": 8,
+      "action": "isometric walking right cycle",
+      "fps": 12
+    },
+    {
+      "name": "walk-up",
+      "row": 5,
+      "frames": 8,
+      "action": "isometric walking up and away cycle, back/top view",
+      "fps": 12
+    },
+    {
+      "name": "walk-down",
+      "row": 6,
+      "frames": 8,
+      "action": "isometric walking down and toward camera cycle, front/top view",
+      "fps": 12
+    }
+  ],
+  "style_preset": "iso-rpg",
+  "style_notes": "",
+  "view": "isometric RPG directional view like the provided walk.png reference",
+  "chroma_key": {
+    "hex": "#FF00FF",
+    "rgb": [
+      255,
+      0,
+      255
+    ],
+    "name": "magenta",
+    "selection": "auto",
+    "score": 204.47
+  },
+  "notes": "an original basic medieval footman matching the provided walk.png style reference: small chibi/isometric RPG sprite, kettle helmet or simple steel cap, chainmail, padded tunic, boots, round shield, short sword, compact readable silhouette, no logo or readable text; directional animations use isometric/angled views, with walk-up as back/top angled walking away and walk-down as front/top angled walking toward camera"
+}

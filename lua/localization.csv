@@ -9,6 +9,10 @@ value_on,ON,UKLJ
 value_off,OFF,ISKLJ
 label_music_volume,Music Volume:,Glasnoća glazbe:
 label_language,Language:,Jezik:
+label_customize_player,Customize Player:,Uredi igrača:
+label_player_number,Player {index},Igrač {index}
+label_player_name,Name:,Ime:
+label_pawn_skin,Pawn Look:,Izgled pijuna:
 button_play,PLAY,IGRAJ
 button_load_game,LOAD GAME,UČITAJ IGRU
 splash_title,SRAZ 2025,SRAZ 2025

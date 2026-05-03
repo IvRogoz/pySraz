@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "frames_root": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames",
+  "cell_width": 64,
+  "cell_height": 64,
+  "chroma_key": {
+    "hex": "#FF00FF",
+    "rgb": [
+      255,
+      0,
+      255
+    ],
+    "name": "magenta",
+    "selection": "auto",
+    "score": 204.47
+  },
+  "animations": [
+    {
+      "name": "idle",
+      "row": 0,
+      "frames": 6,
+      "action": "idle stance loop in the same isometric RPG sprite style",
+      "fps": 12
+    },
+    {
+      "name": "attack",
+      "row": 1,
+      "frames": 6,
+      "action": "short sword attack loop in isometric RPG view",
+      "fps": 12
+    },
+    {
+      "name": "guard",
+      "row": 2,
+      "frames": 4,
+      "action": "shield raised guard stance loop in isometric RPG view",
+      "fps": 12
+    },
+    {
+      "name": "walk-left",
+      "row": 3,
+      "frames": 8,
+      "action": "isometric walking left cycle",
+      "fps": 12
+    },
+    {
+      "name": "walk-right",
+      "row": 4,
+      "frames": 8,
+      "action": "isometric walking right cycle",
+      "fps": 12
+    },
+    {
+      "name": "walk-up",
+      "row": 5,
+      "frames": 8,
+      "action": "isometric walking up and away cycle, back/top view",
+      "fps": 12
+    },
+    {
+      "name": "walk-down",
+      "row": 6,
+      "frames": 8,
+      "action": "isometric walking down and toward camera cycle, front/top view",
+      "fps": 12
+    }
+  ],
+  "rows": [
+    {
+      "state": "idle",
+      "row": 0,
+      "frames": 6,
+      "method": "components",
+      "strip": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\decoded\\idle.png",
+      "outputs": [
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\00.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\01.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\02.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\03.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\04.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\idle\\05.png"
+      ]
+    },
+    {
+      "state": "attack",
+      "row": 1,
+      "frames": 6,
+      "method": "components",
+      "strip": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\decoded\\attack.png",
+      "outputs": [
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\00.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\01.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\02.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\03.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\04.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\attack\\05.png"
+      ]
+    },
+    {
+      "state": "guard",
+      "row": 2,
+      "frames": 4,
+      "method": "components",
+      "strip": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\decoded\\guard.png",
+      "outputs": [
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\guard\\00.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\guard\\01.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\guard\\02.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\guard\\03.png"
+      ]
+    },
+    {
+      "state": "walk-left",
+      "row": 3,
+      "frames": 8,
+      "method": "components",
+      "strip": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\decoded\\walk-left.png",
+      "outputs": [
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\00.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\01.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\02.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\03.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\04.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\05.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\06.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-left\\07.png"
+      ]
+    },
+    {
+      "state": "walk-right",
+      "row": 4,
+      "frames": 8,
+      "method": "components",
+      "strip": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\decoded\\walk-right.png",
+      "outputs": [
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\00.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\01.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\02.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\03.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\04.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\05.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\06.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-right\\07.png"
+      ]
+    },
+    {
+      "state": "walk-up",
+      "row": 5,
+      "frames": 8,
+      "method": "components",
+      "strip": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\decoded\\walk-up.png",
+      "outputs": [
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\00.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\01.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\02.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\03.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\04.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\05.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\06.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-up\\07.png"
+      ]
+    },
+    {
+      "state": "walk-down",
+      "row": 6,
+      "frames": 8,
+      "method": "components",
+      "strip": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\decoded\\walk-down.png",
+      "outputs": [
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\00.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\01.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\02.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\03.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\04.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\05.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\06.png",
+        "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\frames\\walk-down\\07.png"
+      ]
+    }
+  ]
+}

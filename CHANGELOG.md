@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added main-menu player customization for renaming players before starting a game.
+- Added selectable pawn looks with the existing animated pawn as default and `pawn.png` as the built-in static option.
+- Added support for user-added PNG pawn skins in a `pawn_skins` folder.
+
 ## v0.2.5 - 2026-04-18
 
 - Fixed the Windows packaging process to build `.love` as a ZIP archive instead of a TAR archive.

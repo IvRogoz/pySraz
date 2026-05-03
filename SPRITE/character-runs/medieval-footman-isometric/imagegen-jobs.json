@@ -1,0 +1,509 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-05-03T17:10:12.336710+00:00",
+  "run_dir": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric",
+  "primary_generation_skill": "$imagegen",
+  "jobs": [
+    {
+      "id": "base",
+      "kind": "base-character",
+      "status": "complete",
+      "prompt_file": "prompts/base-character.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "character reference"
+        }
+      ],
+      "output_path": "decoded/base.png",
+      "depends_on": [],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "recording_owner": "parent",
+      "chroma_background_audit": {
+        "ok": true,
+        "total_edge_pixel_count": 79232,
+        "edge_pixel_count": 0,
+        "transparent_edge_count": 79232,
+        "transparent_edge_ratio": 1.0,
+        "warnings": []
+      },
+      "canonical_reference_path": "references\\canonical-base.png",
+      "repair_attempt": 1,
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\normalized\\base-v2.png",
+      "source_provenance": "normalized-run-source",
+      "source_sha256": "9d911b8f6a8993c31420b49a6136bb27b7688b799a23c5cf3b9ea9a2cdc00510",
+      "output_sha256": "9d911b8f6a8993c31420b49a6136bb27b7688b799a23c5cf3b9ea9a2cdc00510",
+      "completed_at": "2026-05-03T17:15:28.453602+00:00",
+      "metadata": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "format": "PNG"
+      }
+    },
+    {
+      "id": "idle",
+      "kind": "animation-strip",
+      "status": "complete",
+      "prompt_file": "prompts/animations/idle.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "character reference"
+        },
+        {
+          "path": "references/layout-guides/idle.png",
+          "role": "layout guide for 6 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base character"
+        }
+      ],
+      "output_path": "decoded/idle.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "animation": {
+        "name": "idle",
+        "row": 0,
+        "frames": 6,
+        "fps": 12,
+        "action": "idle stance loop in the same isometric RPG sprite style"
+      },
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\normalized\\idle.png",
+      "source_provenance": "normalized-run-source",
+      "source_sha256": "7194f11efce289e013c7842da1b85c5c422dd9a612949c1eea5b407d68b29f17",
+      "output_sha256": "7194f11efce289e013c7842da1b85c5c422dd9a612949c1eea5b407d68b29f17",
+      "completed_at": "2026-05-03T17:24:43.152595+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGBA",
+        "format": "PNG"
+      },
+      "chroma_background_audit": {
+        "ok": true,
+        "total_edge_pixel_count": 91648,
+        "edge_pixel_count": 0,
+        "transparent_edge_count": 91648,
+        "transparent_edge_ratio": 1.0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "attack",
+      "kind": "animation-strip",
+      "status": "complete",
+      "prompt_file": "prompts/animations/attack.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "character reference"
+        },
+        {
+          "path": "references/layout-guides/attack.png",
+          "role": "layout guide for 6 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base character"
+        }
+      ],
+      "output_path": "decoded/attack.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "animation": {
+        "name": "attack",
+        "row": 1,
+        "frames": 6,
+        "fps": 12,
+        "action": "short sword attack loop in isometric RPG view"
+      },
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\normalized\\attack.png",
+      "source_provenance": "normalized-run-source",
+      "source_sha256": "c56ae7226fdd213e1682626153cb3266bc499cd56ea9c7d5098528da79fc3b42",
+      "output_sha256": "c56ae7226fdd213e1682626153cb3266bc499cd56ea9c7d5098528da79fc3b42",
+      "completed_at": "2026-05-03T17:24:51.918539+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGBA",
+        "format": "PNG"
+      },
+      "chroma_background_audit": {
+        "ok": true,
+        "total_edge_pixel_count": 91648,
+        "edge_pixel_count": 0,
+        "transparent_edge_count": 91648,
+        "transparent_edge_ratio": 1.0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "guard",
+      "kind": "animation-strip",
+      "status": "complete",
+      "prompt_file": "prompts/animations/guard.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "character reference"
+        },
+        {
+          "path": "references/layout-guides/guard.png",
+          "role": "layout guide for 4 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base character"
+        }
+      ],
+      "output_path": "decoded/guard.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "animation": {
+        "name": "guard",
+        "row": 2,
+        "frames": 4,
+        "fps": 12,
+        "action": "shield raised guard stance loop in isometric RPG view"
+      },
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\normalized\\guard.png",
+      "source_provenance": "normalized-run-source",
+      "source_sha256": "7b0138d9b0e0f7e755fba259ca55d15e2b4c7ea8e840b24919e04ee1aa20bd97",
+      "output_sha256": "7b0138d9b0e0f7e755fba259ca55d15e2b4c7ea8e840b24919e04ee1aa20bd97",
+      "completed_at": "2026-05-03T17:25:00.809370+00:00",
+      "metadata": {
+        "width": 1983,
+        "height": 793,
+        "mode": "RGBA",
+        "format": "PNG"
+      },
+      "chroma_background_audit": {
+        "ok": true,
+        "total_edge_pixel_count": 87808,
+        "edge_pixel_count": 0,
+        "transparent_edge_count": 87808,
+        "transparent_edge_ratio": 1.0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "walk-left",
+      "kind": "animation-strip",
+      "status": "complete",
+      "prompt_file": "prompts/animations/walk-left.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "character reference"
+        },
+        {
+          "path": "references/layout-guides/walk-left.png",
+          "role": "layout guide for 8 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base character"
+        },
+        {
+          "path": "decoded/walk-right.png",
+          "role": "source animation strip for mirror decision: walk-right"
+        }
+      ],
+      "output_path": "decoded/walk-left.png",
+      "depends_on": [
+        "base",
+        "walk-right"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "animation": {
+        "name": "walk-left",
+        "row": 3,
+        "frames": 8,
+        "fps": 12,
+        "action": "isometric walking left cycle"
+      },
+      "mirror_policy": {
+        "may_derive_from": "walk-right",
+        "derivation": "horizontal-mirror",
+        "requires_explicit_approval": true,
+        "fallback_generation_skill": "$imagegen"
+      },
+      "recording_owner": "parent",
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\normalized\\walk-left.png",
+      "source_provenance": "normalized-run-source",
+      "source_sha256": "58495fd3aec18468d1f03b28fa29cac793067a473be7469610b796d009ab03cf",
+      "output_sha256": "58495fd3aec18468d1f03b28fa29cac793067a473be7469610b796d009ab03cf",
+      "completed_at": "2026-05-03T17:25:18.324689+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGBA",
+        "format": "PNG"
+      },
+      "chroma_background_audit": {
+        "ok": true,
+        "total_edge_pixel_count": 91648,
+        "edge_pixel_count": 0,
+        "transparent_edge_count": 91648,
+        "transparent_edge_ratio": 1.0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "walk-right",
+      "kind": "animation-strip",
+      "status": "complete",
+      "prompt_file": "prompts/animations/walk-right.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "character reference"
+        },
+        {
+          "path": "references/layout-guides/walk-right.png",
+          "role": "layout guide for 8 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base character"
+        }
+      ],
+      "output_path": "decoded/walk-right.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "animation": {
+        "name": "walk-right",
+        "row": 4,
+        "frames": 8,
+        "fps": 12,
+        "action": "isometric walking right cycle"
+      },
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\normalized\\walk-right.png",
+      "source_provenance": "normalized-run-source",
+      "source_sha256": "3da933c550ca7ecd45816e3fa474d0dbc367c2ab79a40a6e14372e9b22309ad3",
+      "output_sha256": "3da933c550ca7ecd45816e3fa474d0dbc367c2ab79a40a6e14372e9b22309ad3",
+      "completed_at": "2026-05-03T17:25:09.554456+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGBA",
+        "format": "PNG"
+      },
+      "chroma_background_audit": {
+        "ok": true,
+        "total_edge_pixel_count": 91648,
+        "edge_pixel_count": 0,
+        "transparent_edge_count": 91648,
+        "transparent_edge_ratio": 1.0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "walk-up",
+      "kind": "animation-strip",
+      "status": "complete",
+      "prompt_file": "prompts/animations/walk-up.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "character reference"
+        },
+        {
+          "path": "references/layout-guides/walk-up.png",
+          "role": "layout guide for 8 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base character"
+        }
+      ],
+      "output_path": "decoded/walk-up.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "animation": {
+        "name": "walk-up",
+        "row": 5,
+        "frames": 8,
+        "fps": 12,
+        "action": "isometric walking up and away cycle, back/top view"
+      },
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\normalized\\walk-up.png",
+      "source_provenance": "normalized-run-source",
+      "source_sha256": "24c652e2465f68d7a32e483e6359deb23c8d51417e6721cbf63a326402c433a2",
+      "output_sha256": "24c652e2465f68d7a32e483e6359deb23c8d51417e6721cbf63a326402c433a2",
+      "completed_at": "2026-05-03T17:25:27.176111+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGBA",
+        "format": "PNG"
+      },
+      "chroma_background_audit": {
+        "ok": true,
+        "total_edge_pixel_count": 91648,
+        "edge_pixel_count": 0,
+        "transparent_edge_count": 91648,
+        "transparent_edge_ratio": 1.0,
+        "warnings": []
+      }
+    },
+    {
+      "id": "walk-down",
+      "kind": "animation-strip",
+      "status": "complete",
+      "prompt_file": "prompts/animations/walk-down.md",
+      "input_images": [
+        {
+          "path": "references\\reference-01.png",
+          "role": "character reference"
+        },
+        {
+          "path": "references/layout-guides/walk-down.png",
+          "role": "layout guide for 8 frame slots; use for spacing only, do not copy guide lines"
+        },
+        {
+          "path": "references/canonical-base.png",
+          "role": "canonical identity reference"
+        },
+        {
+          "path": "decoded/base.png",
+          "role": "approved base character"
+        }
+      ],
+      "output_path": "decoded/walk-down.png",
+      "depends_on": [
+        "base"
+      ],
+      "generation_skill": "$imagegen",
+      "requires_grounded_generation": true,
+      "allow_prompt_only_generation": false,
+      "identity_reference_paths": [
+        "references/canonical-base.png",
+        "decoded/base.png"
+      ],
+      "animation": {
+        "name": "walk-down",
+        "row": 6,
+        "frames": 8,
+        "fps": 12,
+        "action": "isometric walking down and toward camera cycle, front/top view"
+      },
+      "mirror_policy": {},
+      "recording_owner": "parent",
+      "source_path": "D:\\Programing\\BarnLab\\pySraz\\SPRITE\\character-runs\\medieval-footman-isometric\\normalized\\walk-down.png",
+      "source_provenance": "normalized-run-source",
+      "source_sha256": "8a568e032221928f7b973b89bd659592b729b7e8a4ff573bb9ae91b609f94181",
+      "output_sha256": "8a568e032221928f7b973b89bd659592b729b7e8a4ff573bb9ae91b609f94181",
+      "completed_at": "2026-05-03T17:25:35.914932+00:00",
+      "metadata": {
+        "width": 2172,
+        "height": 724,
+        "mode": "RGBA",
+        "format": "PNG"
+      },
+      "chroma_background_audit": {
+        "ok": true,
+        "total_edge_pixel_count": 91648,
+        "edge_pixel_count": 0,
+        "transparent_edge_count": 91648,
+        "transparent_edge_ratio": 1.0,
+        "warnings": []
+      }
+    }
+  ],
+  "canonical_identity_reference": {
+    "path": "references\\canonical-base.png",
+    "source_job": "base",
+    "sha256": "9d911b8f6a8993c31420b49a6136bb27b7688b799a23c5cf3b9ea9a2cdc00510",
+    "metadata": {
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "format": "PNG"
+    }
+  }
+}

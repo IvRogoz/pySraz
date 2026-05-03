@@ -191,6 +191,28 @@ end
 
 local drawAnimatedPawn
 
+local function drawStaticPawnImage(S, pawn, player, image, x, y, pawnSize, allowPulse)
+  local pulse = allowPulse and S.selectedPawn and pawn == S.selectedPawn
+  local iw, ih = image:getDimensions()
+  local scale = pawnSize / math.max(iw, ih)
+  if pulse then
+    scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
+  end
+
+  local alpha = 255
+  if pawn.row and pawn.col and S.board and S.board[pawn.row] and S.board[pawn.row][pawn.col] then
+    local cell = S.board[pawn.row][pawn.col]
+    if cell and cell.treeCol then
+      alpha = 128
+    end
+  end
+
+  local color = player.color or {255, 255, 255}
+  U.setColor255(color[1], color[2], color[3], alpha)
+  love.graphics.draw(image, x, y, 0, scale, scale, iw / 2, ih)
+  U.setColor255(255, 255, 255, 255)
+end
+
 local function drawCurrentPlayerPanel(S, x, y)
 
   local p = S.players[S.currentPlayerIndex]
@@ -206,6 +228,8 @@ local function drawCurrentPlayerPanel(S, x, y)
       name = p.name,
       color = p.color,
       score = p.score,
+      pawnSkin = p.pawnSkin,
+      pawnCanvas = p.pawnCanvas,
       scaleBoost = 1.0,
     },
   }
@@ -371,6 +395,60 @@ local function drawMenu(S)
   love.graphics.setFont(valueFont)
   love.graphics.printf(Localization.getLanguageName(S, S.language or S.cfg.language or "en"), 0, rowLanguage + valueOffset, w, "center")
 
+  local panelW = 260
+  local panelX = math.min(w - panelW - 24, cx + 210)
+  local panelY = cy - 235
+  S.menuNameRects = {}
+
+  U.setColor255(0, 0, 0, 165)
+  love.graphics.rectangle("fill", panelX, panelY, panelW, 300, 8, 8)
+  U.setColor255(245, 235, 220, 255)
+  love.graphics.rectangle("line", panelX, panelY, panelW, 300, 8, 8)
+
+  local playerIndex = S.selectedConfigPlayer or 1
+  local playerName = (S.cfg.playerNames and S.cfg.playerNames[playerIndex]) or ("Player " .. playerIndex)
+  local skinId = (S.cfg.pawnSkins and S.cfg.pawnSkins[playerIndex]) or "animated"
+  local skinLabel = skinId
+  local skinOption = nil
+  for _, option in ipairs(S.pawnSkinOptions or {}) do
+    if option.id == skinId then
+      skinOption = option
+      skinLabel = option.label
+      break
+    end
+  end
+
+  love.graphics.setFont(labelFont)
+  U.setColor255(255, 255, 255, 255)
+  love.graphics.printf(t(S, "label_customize_player"), panelX, panelY + 18, panelW, "center")
+  love.graphics.setFont(valueFont)
+  love.graphics.printf(t(S, "label_player_number", {index = playerIndex}), panelX, panelY + 48, panelW, "center")
+
+  love.graphics.setFont(labelFont)
+  love.graphics.printf(t(S, "label_player_name"), panelX + 18, panelY + 92, panelW - 36, "left")
+  local nameX, nameY, nameW, nameH = panelX + 18, panelY + 118, panelW - 36, 34
+  local editing = S.editingPlayerIndex == playerIndex
+  U.setColor255(editing and 255 or 245, editing and 245 or 235, editing and 210 or 220, 255)
+  love.graphics.rectangle("fill", nameX, nameY, nameW, nameH, 6, 6)
+  U.setColor255(20, 20, 20, 255)
+  love.graphics.rectangle("line", nameX, nameY, nameW, nameH, 6, 6)
+  love.graphics.setFont(S.fonts.small)
+  love.graphics.printf(playerName .. (editing and "|" or ""), nameX + 8, nameY + 6, nameW - 16, "left")
+  table.insert(S.menuNameRects, {x = nameX, y = nameY, w = nameW, h = nameH, playerIndex = playerIndex})
+
+  love.graphics.setFont(labelFont)
+  U.setColor255(255, 255, 255, 255)
+  love.graphics.printf(t(S, "label_pawn_skin"), panelX + 18, panelY + 172, panelW - 36, "left")
+  love.graphics.setFont(valueFont)
+  love.graphics.printf(skinLabel, panelX, panelY + 202, panelW, "center")
+
+  local previewPlayer = {
+    color = Config.PLAYER_COLORS[playerIndex],
+    pawnSkin = skinOption,
+  }
+  local previewPawn = {player = previewPlayer}
+  drawAnimatedPawn(S, previewPawn, panelX + panelW / 2, panelY + 285, 68, S.pawnAnim and S.pawnAnim.idle, getDirRow("left"), getPawnIdleFrame(S.pawnAnim, love.timer.getTime()), false)
+
 
 
 
@@ -382,7 +460,9 @@ end
 drawAnimatedPawn = function(S, pawn, x, y, pawnSize, sheet, row, col, allowPulse)
   local anim = S.pawnAnim
   local pulse = allowPulse and S.selectedPawn and pawn == S.selectedPawn
-  if anim and sheet and sheet.image and sheet.quads and sheet.quads[row] and sheet.quads[row][col] then
+  local player = pawn.player or {}
+  local skin = player.pawnSkin
+  if (not skin or skin.type == "animated") and anim and sheet and sheet.image and sheet.quads and sheet.quads[row] and sheet.quads[row][col] then
     local scale = pawnSize / anim.frameSize
     if pulse then
       scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))
@@ -391,9 +471,9 @@ drawAnimatedPawn = function(S, pawn, x, y, pawnSize, sheet, row, col, allowPulse
     local shader = getPawnTintShader()
     local target = {0xab / 255, 0x42 / 255, 0x5a / 255}
     local replace = {
-      pawn.player.color[1] / 255,
-      pawn.player.color[2] / 255,
-      pawn.player.color[3] / 255,
+      player.color[1] / 255,
+      player.color[2] / 255,
+      player.color[3] / 255,
     }
     scale = scale * 1.0
     shader:send("targetColor", target)
@@ -420,7 +500,15 @@ drawAnimatedPawn = function(S, pawn, x, y, pawnSize, sheet, row, col, allowPulse
     return
   end
 
-  local canvas = pawn.player.pawnCanvas
+  if skin and skin.type == "image" and skin.image then
+    drawStaticPawnImage(S, pawn, player, skin.image, x, y, pawnSize, allowPulse)
+    return
+  end
+
+  local canvas = player.pawnCanvas
+  if not canvas then
+    return
+  end
   local scale = pawnSize / Config.PAWN_CANVAS_SIZE
   if pulse then
     scale = scale * (1.0 + 0.1 * math.sin(love.timer.getTime() * 10))

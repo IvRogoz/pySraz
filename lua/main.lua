@@ -17,6 +17,8 @@ local S = {
     musicVolume  = 0.5, -- default 50%
     includeTrees = true,
     language     = "en",
+    playerNames  = {},
+    pawnSkins    = {},
   },
 
   fonts = {},
@@ -47,12 +49,16 @@ local S = {
 
 
   menuButtons = nil,
+  menuNameRects = nil,
+  selectedConfigPlayer = 1,
+  editingPlayerIndex = nil,
 
   -- cached assets
   pawnBaseImg = nil,
   flagBaseImg = nil,
 
   pawnAnim = nil,
+  pawnSkinOptions = nil,
   flagSheet = nil,
   tileSheet = nil,
   rockSprites = nil,
@@ -121,6 +127,7 @@ function love.load()
   S.flagBaseImg = Assets.tryLoadImage("flag.png")
   if not S.pawnBaseImg then print("Warning: pawn.png missing -> using fallback") end
   if not S.flagBaseImg then print("Warning: flag.png missing -> using fallback") end
+  S.pawnSkinOptions = Assets.loadPawnSkinOptions(S.pawnBaseImg)
 
   -- Optional sprite sheets
   S.pawnAnim = Assets.loadPawnAnimations()
@@ -208,4 +215,10 @@ end
 
 function love.keypressed(key)
   Game.keypressed(S, key)
+end
+
+function love.textinput(text)
+  if Game.textinput then
+    Game.textinput(S, text)
+  end
 end

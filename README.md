@@ -73,7 +73,14 @@ Attack flow is: attack animation -> question(s) -> feedback -> death (if any) ->
 - Trees on/off
 - Music volume
 - Language selection
+- Player customization: choose a player, click the name field to rename them, and cycle pawn looks
 - Play / Load Game
+
+## Pawn Skins
+
+The default pawn look is the current animated sprite. The second built-in option is `lua/pawn.png`, shown as a static pawn.
+
+To add more pawn looks, place PNG files in a `pawn_skins` folder. In a packaged Windows release, create `pawn_skins` next to `Sraz.exe`; when running from source, use `lua/pawn_skins/`. Restart the game and the new PNG files appear in the main menu pawn look selector.
 
 ## Saving & Loading
 
@@ -152,6 +159,7 @@ copy /b love.exe+sraz.love Sraz.exe
 - `SDL2.dll`, `OpenAL32.dll`, `love.dll`, `lua51.dll`, `mpg123.dll`, `msvcp120.dll`, `msvcr120.dll`
 
 4) Place `questions.csv` and `localization.csv` next to the EXE.
+5) Optional: place a `pawn_skins` folder next to the EXE for user-added pawn PNGs.
 
 ## Notes
 
